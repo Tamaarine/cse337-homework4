@@ -46,3 +46,29 @@ describe "Func: regex?" do
     expect(regex?("\"\"\"\"")).to eq true
   end
 end
+
+describe "Func: parse_regex" do
+  it "Should return a regex object" do
+    expect(parse_regex("\"[ab]\"")).to be_instance_of(Regexp)
+  end
+  
+  it "Should return a regex object" do
+    expect(parse_regex("\"/\d.\d/\"")).to be_instance_of(Regexp)
+  end
+  
+  it "Should return nil since string doesn't conform specification" do
+    expect(parse_regex("\"[ab]")).to be_nil
+  end
+  
+  it "Should return a regex object, even an empty pattern" do
+    expect(parse_regex("\"\"")).to be_instance_of(Regexp)
+  end
+  
+  it "Should return nil with catch all exception" do
+    expect(parse_regex(1)).to be_nil
+  end
+  
+  it "Should return nil with RegexpError because of invalid regexp" do
+    expect(parse_regex("\"[\"")).to be_nil
+  end
+end
