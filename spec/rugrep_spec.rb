@@ -72,3 +72,55 @@ describe "Func: parse_regex" do
     expect(parse_regex("\"[\"")).to be_nil
   end
 end
+
+describe "Func: continous_regex?" do
+  it "Should return false because it cannot find a regex" do
+    input = ["x", "al", "ababa", "-v"]
+    expect(continous_regex?(input)).to eq false
+  end
+  
+  it "Should return false because there is no regex" do
+    input = ["x", "p"]
+    expect(continous_regex?(input)).to eq false
+  end
+  
+  it "Should return false no valid regex" do
+    input = ["x", "\"p"]
+    expect(continous_regex?(input)).to eq false
+  end
+  
+  it "Should return true with one file & one valid regex" do
+    input = ["x", "\"p\""]
+    expect(continous_regex?(input)).to eq true
+  end
+  
+  it "Should return false the regex is not continous" do
+    input = ["a", "\"p\"", "a", "\"hehe\""]
+    expect(continous_regex?(input)).to eq false
+  end
+  
+  it "Should be true, half quoted string is not regex" do
+    input = ["\"p\"", "\"hehe\"", "in", "the", "beg\""]
+    expect(continous_regex?(input)).to eq true
+  end
+  
+  it "Should be true, half quoted string is not regex" do
+    input = ["in", "the", "beg\"", "\"p\"", "\"hehe\"", "\"", "file/file"]
+    expect(continous_regex?(input)).to eq true
+  end
+  
+  it "Should be false, regex after option/file" do
+    input = ["in", "the", "beg\"", "\"p\"", "\"", "file/file", "\"hehe\""]
+    expect(continous_regex?(input)).to eq false
+  end
+  
+  it "Should be false, regex after option/file" do
+    input = ["in", "the", "beg\"", "\"p\"", "\"", "file/file", "hehee", "hehee", "\"hehe\""]
+    expect(continous_regex?(input)).to eq false
+  end
+  
+  it "Should be true, bunch of regex after file/option" do
+    input = ["in", "the", "beg\"", "\"p\"", "\"hehe\"", "\"hehe\"", "\"hehe\"", "\"hehe\"", "\"hehe\""]
+    expect(continous_regex?(input)).to eq true
+  end
+end
