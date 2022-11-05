@@ -2,7 +2,7 @@
 args = ARGF.argv
 # args = ARGV
 
-def regex?(exp)
+def regex_format?(exp)
   # Returns true if the input string is a regex
   # specified by two quotes in front and the back
   # ex. \"[ab]pple\" is valid
@@ -16,14 +16,12 @@ def parse_regex(exp)
   # exp must conform the specified string style, be surrounded
   # by double quotes.
   # Return nil if it cannot construct the regex object
-  if not regex?(exp)
+  if not regex_format?(exp)
     return nil
   end
   
   begin
     return Regexp.new(exp[1...-1])
-  rescue RegexpError
-    return nil
   rescue
     # Catch all exception
     return nil
