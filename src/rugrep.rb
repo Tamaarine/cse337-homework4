@@ -4,6 +4,9 @@ args = ARGF.argv
 
 $usage = "USAGE: ruby rgrep.rb"
 $error_regex = "Error: cannot parse regex"
+$after_c = /\A(\-A_|\-\-after\-context=)(\d*)\z/
+$before_c = /\A(\-B_|\-\-before\-context=)(\d*)\z/
+$c = /\A(\-C_|\-\-context=)(\d*)\z/
 
 def regex_format?(exp)
   # Returns true if the input string is a regex
