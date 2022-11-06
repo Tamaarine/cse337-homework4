@@ -120,7 +120,63 @@ def sum_flags(option_flags)
 end
 
 def parseArgs(args)
-  # Fill me
+  # Handles the 1, 2, 5 error case.
+  return $usage if args.length < 2 or not continous_regex?(args)
+  
+  option_flags = get_option_flags(args)
+  return $usage if not option_flags   # Handle 3 eror case.
+  
+  if sum_flags(option_flags) == 3
+    if option_flags["-F"] and option_flags["-v"] and option_flags["-c"]
+      "-F -v -c"
+    else
+      return $usage
+    end
+  elsif sum_flags(option_flags) == 2
+    if option_flags["-F"] and option_flags["-v"]
+      "-F -v"
+    elsif option_flags["-F"] and option_flags["-o"]
+      "-F -o"
+    elsif option_flags["-F"] and option_flags["-c"]
+      "-F -c"
+    elsif option_flags["-c"] and option_flags["-v"]
+      "-c -v"
+    elsif option_flags["-o"] and option_flags["-c"]
+      "-o -c"
+    elsif option_flags["-A_NUM"] and option_flags["-v"]
+      "-A_NUM -v"
+    elsif option_flags["-B_NUM"] and option_flags["-v"]
+      "-B_NUM -v"
+    elsif option_flags["-C_NUM"] and option_flags["-v"]
+      "-C_NUM -v"
+    else
+      return $usage
+    end
+  elsif sum_flags(option_flags) == 1
+    if option_flags["-v"]
+      "-v"
+    elsif option_flags["-c"]
+      "-c"
+    elsif option_flags["-l"]
+      "-l"
+    elsif option_flags["-L"]
+      "-L"
+    elsif option_flags["-o"]
+      "-o"
+    elsif option_flags["-F"]
+      "-F"
+    elsif option_flags["-A_NUM"]
+      "-A_NUM"
+    elsif option_flags["-B_NUM"]
+      "-B_NUM"
+    else
+      "-C_NUM"
+    end
+  elsif sum_flags(option_flags) == 0
+    
+  else
+    return $usage # Handle 4 error case.
+  end
 end
 
 puts parseArgs(args)
