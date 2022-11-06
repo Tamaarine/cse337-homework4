@@ -7,6 +7,11 @@ $error_regex = "Error: cannot parse regex"
 $after_c = /\A(\-A_|\-\-after\-context=)(\d*)\z/
 $before_c = /\A(\-B_|\-\-before\-context=)(\d*)\z/
 $c = /\A(\-C_|\-\-context=)(\d*)\z/
+$option_regexs = {
+  "-A_NUM" => $after_c,
+  "-B_NUM" => $before_c,
+  "-C_NUM" => $c
+}
 
 def regex_format?(exp)
   # exp: A string
