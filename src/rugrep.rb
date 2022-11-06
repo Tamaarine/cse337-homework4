@@ -58,9 +58,35 @@ def valid_option?(option)
   before_c = /\A(\-B_|\-\-before\-context=)(\d*)\z/
   c = /\A(\-C_|\-\-context=)(\d*)\z/
   
-  return after_c.match(option) if option =~ after_c
-  return before_c.match(option) if option =~ before_c
-  return c.match(option) if option =~ c
+def get_option_flags(args)
+  # args: list of commandline argument. len(args) >= 2
+  # Return false if any options is invalid or repeated options
+  # Return a dictionary that map the simplified flag name to whether it exists or not
+  # [ABC]_NUM also contain their respective arguments under _P extension
+  
+  flags = ["-v", "-c", "-l", "-L", "-o", "-F", "-A_NUM", "-B_NUM", "-C_NUM"]
+  options = {}
+  flags.each {|ele| options[ele] = false}
+  
+  args.each do |arg|
+    if arg[0..1] == "--" or arg[0] == "-"
+      simplified_flag = valid_option?(arg)
+      return false if not simplified_flag       # If any is invalid, false
+      return false if options[simplified_flag]  # dup options, false
+
+      # Append the arguments _P if exists
+      case simplified_flag
+      when "-A_NUM"
+        options["#{simplified_flag}_P"] = ($option_regexs[simplified_flag].match(arg))[2].to_i
+      when "-B_NUM"
+        options["#{simplified_flag}_P"] = ($option_regexs[simplified_flag].match(arg))[2].to_i
+      when "-C_NUM"
+        options["#{simplified_flag}_P"] = ($option_regexs[simplified_flag].match(arg))[2].to_i
+      end
+      options[simplified_flag] = true
+    end
+  end
+  options
 end
 
 def continous_regex?(args)
