@@ -111,6 +111,14 @@ def continous_regex?(args)
   return true
 end
 
+def sum_flags(option_flags)
+  # option_flags: the dictionary from parseArgs. All are valid flags
+  # return the number of true flags
+  sum = 0
+  option_flags.each {|key, value| sum += 1 if key[-2..] != "_P" and value }
+  sum
+end
+
 def parseArgs(args)
   # Fill me
 end
