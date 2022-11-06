@@ -2,8 +2,8 @@
 args = ARGF.argv
 # args = ARGV
 
-usage = "USAGE: ruby rgrep.rb"
-error_regex = "Error: cannot parse regex"
+$usage = "USAGE: ruby rgrep.rb"
+$error_regex = "Error: cannot parse regex"
 
 def regex_format?(exp)
   # Returns true if the input string is a regex
@@ -29,6 +29,34 @@ def parse_regex(exp)
     # Catch all exception
     return nil
   end
+end
+
+def valid_option?(option)
+  # Given an option return true if it is a valid option
+  # or return the matched object for A_, B_, C_ option.
+  # nil otherwise.
+  case option
+  when "-v", "--invert-match"
+    return "-v"
+  when "-c", "--count"
+    return "-c"
+  when "-l", "--files-with-matches"
+    return "-l"
+  when "-L", "--files-without-match"
+    return "-L"
+  when "-o", "--only-matching"
+    return "-o"
+  when "-F", "--fixed-strings"
+    return "-F"
+  end
+
+  after_c = /\A(\-A_|\-\-after\-context=)(\d*)\z/
+  before_c = /\A(\-B_|\-\-before\-context=)(\d*)\z/
+  c = /\A(\-C_|\-\-context=)(\d*)\z/
+  
+  return after_c.match(option) if option =~ after_c
+  return before_c.match(option) if option =~ before_c
+  return c.match(option) if option =~ c
 end
 
 def continous_regex?(args)
