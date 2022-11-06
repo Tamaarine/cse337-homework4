@@ -156,31 +156,19 @@ describe "Func: valid_option?" do
     expect(valid_option?("--fixed-strings")).to eq "-F"
   end
   
-  it "Should be able to identity -A/--after-context" do
-    expect(valid_option?("-A_2")[0]).to eq "-A_2"
-    expect(valid_option?("-A_2")[2]).to eq "2"
-    expect(valid_option?("-A_")[2]).to eq ""
-    expect(valid_option?("--after-context=2")[0]).to eq "--after-context=2"
-    expect(valid_option?("--after-context=2")[2]).to eq "2"
-    expect(valid_option?("--after-context=")[2]).to eq ""
+  it "Should be able to identify -A/--after-context" do
+    expect(valid_option?("-A_2")).to eq "-A_NUM"
+    expect(valid_option?("--after-context=2")).to eq "-A_NUM"
   end
   
-  it "Should be able to identity -B/--before-context" do
-    expect(valid_option?("-B_2")[0]).to eq "-B_2"
-    expect(valid_option?("-B_2")[2]).to eq "2"
-    expect(valid_option?("-B_")[2]).to eq ""
-    expect(valid_option?("--before-context=2")[0]).to eq "--before-context=2"
-    expect(valid_option?("--before-context=2")[2]).to eq "2"
-    expect(valid_option?("--before-context=")[2]).to eq ""
+  it "Should be able to identify -B/--before-context" do
+    expect(valid_option?("-B_2")).to eq "-B_NUM"
+    expect(valid_option?("--before-context=2")).to eq "-B_NUM"
   end
   
-  it "Should be able to identity -C/--context" do
-    expect(valid_option?("-C_2")[0]).to eq "-C_2"
-    expect(valid_option?("-C_2")[2]).to eq "2"
-    expect(valid_option?("-C_")[2]).to eq ""
-    expect(valid_option?("--context=2")[0]).to eq "--context=2"
-    expect(valid_option?("--context=2")[2]).to eq "2"
-    expect(valid_option?("--context=")[2]).to eq ""
+  it "Should be able to identify -C/--context" do
+    expect(valid_option?("-C_2")).to eq "-C_NUM"
+    expect(valid_option?("--context=2")).to eq "-C_NUM"
   end
   
   it "Should be nil for invalid options" do
