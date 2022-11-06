@@ -9,19 +9,15 @@ $before_c = /\A(\-B_|\-\-before\-context=)(\d*)\z/
 $c = /\A(\-C_|\-\-context=)(\d*)\z/
 
 def regex_format?(exp)
-  # Returns true if the input string is a regex
-  # specified by two quotes in front and the back
-  # ex. \"[ab]pple\" is valid
-  # ex. \" is not valid
+  # exp: A string
+  # Return true if exp is a double quoted string
   exp[0] == '"' and exp[-1] == '"' and exp.length != 1
 end
 
 def parse_regex(exp)
-  # Return the regex object that represents the
-  # pattern provided by the input exp.
-  # exp must conform the specified string style, be surrounded
-  # by double quotes.
-  # Return nil if it cannot construct the regex object
+  # exp: A string
+  # Return the regex object that rep the pattern enclosed by the double quoted string
+  # nil otherwise.
   if not regex_format?(exp)
     return nil
   end
@@ -35,9 +31,9 @@ def parse_regex(exp)
 end
 
 def valid_option?(option)
-  # Given an option return true if it is a valid option
-  # or return the matched object for A_, B_, C_ option.
-  # nil otherwise.
+  # option: The option flag
+  # Return the simplified version of the flag, --invert-match -> -v
+  # nil if the option doesn't match
   case option
   when "-v", "--invert-match"
     return "-v"
@@ -63,13 +59,11 @@ def valid_option?(option)
 end
 
 def continous_regex?(args)
-  # This function verifies if all the regex arguments
-  # conforms with the format specified.
-  # Return true if it is, false otherwise.
-  # First tries to find the first regex index using .find.
-  # if result is nil, return false. Then if it is true, it checks two elements ahead
-  # to check if there is any P, X, P args. And return false if it did. Then lastly ret true, if it didn't
-  # Assumes args >= 2, is checked in main
+  # args: The list of commandline argument. len(args) >= 2
+  # Return true if there is at least one double
+  # quoted regex exists in args. It further checks if there is
+  # any P, X, P arguments, where P is regex, and X is either a option or file
+  # False if the regex in args aren't continous or no regex exists.
   
   first_regex_pos = args.length.times.find {|i| regex_format?(args[i])}
 
