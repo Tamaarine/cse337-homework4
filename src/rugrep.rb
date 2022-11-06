@@ -54,10 +54,11 @@ def valid_option?(option)
     return "-F"
   end
 
-  after_c = /\A(\-A_|\-\-after\-context=)(\d*)\z/
-  before_c = /\A(\-B_|\-\-before\-context=)(\d*)\z/
-  c = /\A(\-C_|\-\-context=)(\d*)\z/
-  
+  return "-A_NUM" if option =~ $after_c
+  return "-B_NUM" if option =~ $before_c
+  return "-C_NUM" if option =~ $c
+end
+
 def get_option_flags(args)
   # args: list of commandline argument. len(args) >= 2
   # Return false if any options is invalid or repeated options
