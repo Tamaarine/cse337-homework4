@@ -302,3 +302,52 @@ describe "Func: sum_flags" do
     expect(sum_flags(exp)).to eq 8
   end
 end
+
+describe "Func: get_files" do
+  it "Should return the matching files" do
+    args = [
+      "hehe",
+      "-v",
+      "hehe/hi",
+      "\"regex\"",
+      "-A_2"
+    ]
+    exp = ["hehe", "hehe/hi"]
+    expect(get_files(args)).to eq exp
+  end
+  
+  it "Should return the matching files" do
+    args = [
+      "-v",
+      "\"regex\"",
+      "-A_2"
+    ]
+    exp = []
+    expect(get_files(args)).to eq exp
+  end
+  
+  it "Should return the matching files" do
+    args = [
+      "-v",
+      "\"regex\"",
+      "-A_2",
+      "\"[az]pple\""
+    ]
+    exp = []
+    expect(get_files(args)).to eq exp
+  end
+  
+  it "Should return the matching files" do
+    args = [
+      "-v",
+      "\"regex\"",
+      "-A_2",
+      "\"[az]pple\"",
+      "--count",
+      "--invert-match",
+      "hello world"
+    ]
+    exp = ["hello world"]
+    expect(get_files(args)).to eq exp
+  end
+end
