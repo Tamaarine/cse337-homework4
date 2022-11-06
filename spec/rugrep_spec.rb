@@ -183,3 +183,84 @@ describe "Func: valid_option?" do
     expect(valid_option?("--context=ohno")).to be_nil
   end
 end
+
+describe "Func: get_option_flags" do
+  it "Should return false duplicate options" do
+    input = ["--after-context=2", "\"b\"", "-v", "-c", "-c"]
+    expect(get_option_flags(input)).to eq false
+  end
+  
+  it "Should return false invalid options" do
+    input = ["--after-context=2", "\"b\"", "-v", "-c", "-hehe"]
+    expect(get_option_flags(input)).to eq false
+  end
+  
+  it "Should return false duplicate options" do
+    input = ["--after-context=a", "-A_2"]
+    expect(get_option_flags(input)).to eq false
+  end
+  
+  it "Should return a matching dictionary" do
+    input = ["--after-context=2", "-v"]
+    exp = {
+      "-A_NUM" => true,
+      "-A_NUM_P" => 2,
+      "-B_NUM" => false,
+      "-C_NUM" => false,
+      "-F" => false,
+      "-l" => false,
+      "-L" => false,
+      "-c" => false,
+      "-o" => false,
+      "-v" => true
+    }
+    expect(get_option_flags(input)).to eq exp
+  end
+  
+  it "Should return a matching dictionary" do
+    input = ["--after-context=2", "-v", "-B_4"]
+    exp = {
+      "-A_NUM" => true,
+      "-A_NUM_P" => 2,
+      "-B_NUM" => true,
+      "-B_NUM_P" => 4,
+      "-C_NUM" => false,
+      "-F" => false,
+      "-l" => false,
+      "-L" => false,
+      "-c" => false,
+      "-o" => false,
+      "-v" => true
+    }
+    expect(get_option_flags(input)).to eq exp
+  end
+  
+  it "Should return false invalid option" do
+    input = ["--after-context=2", "-v", "-B_4", "-B"]
+    expect(get_option_flags(input)).to eq false
+  end
+  
+  it "Should return a matching dictionary" do
+    input = ["-A_3", "--before-context=3", "-C_5", "-F", "-l", "-L", "-c", "-o", "-v"]
+    exp = {
+      "-A_NUM" => true,
+      "-A_NUM_P" => 3,
+      "-B_NUM" => true,
+      "-B_NUM_P" => 3,
+      "-C_NUM" => true,
+      "-C_NUM_P" => 5,
+      "-F" => true,
+      "-l" => true,
+      "-L" => true,
+      "-c" => true,
+      "-o" => true,
+      "-v" => true
+    }
+    expect(get_option_flags(input)).to eq exp
+  end
+  
+  it "Should return false" do
+    input = ["-A_a", "--before-context=3", "-C_5", "-F", "-l", "-L", "-c", "-o", "-v"]
+    expect(get_option_flags(input)).to eq false
+  end
+end
