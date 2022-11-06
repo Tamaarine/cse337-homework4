@@ -264,3 +264,41 @@ describe "Func: get_option_flags" do
     expect(get_option_flags(input)).to eq false
   end
 end
+
+describe "Func: sum_flags" do
+  it "Should return 0" do
+    exp = {
+      "-A_NUM" => false,
+      "-A_NUM_P" => 2,
+      "-B_NUM" => false,
+      "-B_NUM_P" => 3,
+      "-C_NUM" => false,
+      "-C_NUM_P" => 5,
+      "-F" => false,
+      "-l" => false,
+      "-c" => false,
+      "-L" => false,
+      "-o" => false,
+      "-v" => false
+    }
+    expect(sum_flags(exp)).to eq 0
+  end
+  
+  it "Should return 8" do
+    exp = {
+      "-A_NUM" => true,
+      "-A_NUM_P" => 3,
+      "-B_NUM" => false,
+      "-B_NUM_P" => 3,
+      "-C_NUM" => true,
+      "-C_NUM_P" => 5,
+      "-F" => true,
+      "-l" => true,
+      "-L" => true,
+      "-c" => true,
+      "-o" => true,
+      "-v" => true
+    }
+    expect(sum_flags(exp)).to eq 8
+  end
+end
