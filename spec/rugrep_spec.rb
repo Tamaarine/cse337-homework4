@@ -124,3 +124,74 @@ describe "Func: continous_regex?" do
     expect(continous_regex?(input)).to eq true
   end
 end
+
+describe "Func: valid_option?" do
+  it "Should return -v" do
+    expect(valid_option?("-v")).to eq "-v"
+    expect(valid_option?("--invert-match")).to eq "-v"
+  end
+  
+  it "Should return -c" do
+    expect(valid_option?("-c")).to eq "-c"
+    expect(valid_option?("--count")).to eq "-c"
+  end
+  
+  it "Should return -l" do
+    expect(valid_option?("-l")).to eq "-l"
+    expect(valid_option?("--files-with-matches")).to eq "-l"
+  end
+  
+  it "Should return -L" do
+    expect(valid_option?("-L")).to eq "-L"
+    expect(valid_option?("--files-without-match")).to eq "-L"
+  end
+  
+  it "Should return -o" do
+    expect(valid_option?("-o")).to eq "-o"
+    expect(valid_option?("--only-matching")).to eq "-o"
+  end
+  
+  it "Should return -F" do
+    expect(valid_option?("-F")).to eq "-F"
+    expect(valid_option?("--fixed-strings")).to eq "-F"
+  end
+  
+  it "Should be able to identity -A/--after-context" do
+    expect(valid_option?("-A_2")[0]).to eq "-A_2"
+    expect(valid_option?("-A_2")[2]).to eq "2"
+    expect(valid_option?("-A_")[2]).to eq ""
+    expect(valid_option?("--after-context=2")[0]).to eq "--after-context=2"
+    expect(valid_option?("--after-context=2")[2]).to eq "2"
+    expect(valid_option?("--after-context=")[2]).to eq ""
+  end
+  
+  it "Should be able to identity -B/--before-context" do
+    expect(valid_option?("-B_2")[0]).to eq "-B_2"
+    expect(valid_option?("-B_2")[2]).to eq "2"
+    expect(valid_option?("-B_")[2]).to eq ""
+    expect(valid_option?("--before-context=2")[0]).to eq "--before-context=2"
+    expect(valid_option?("--before-context=2")[2]).to eq "2"
+    expect(valid_option?("--before-context=")[2]).to eq ""
+  end
+  
+  it "Should be able to identity -C/--context" do
+    expect(valid_option?("-C_2")[0]).to eq "-C_2"
+    expect(valid_option?("-C_2")[2]).to eq "2"
+    expect(valid_option?("-C_")[2]).to eq ""
+    expect(valid_option?("--context=2")[0]).to eq "--context=2"
+    expect(valid_option?("--context=2")[2]).to eq "2"
+    expect(valid_option?("--context=")[2]).to eq ""
+  end
+  
+  it "Should be nil for invalid options" do
+    expect(valid_option?("--hehe")).to be_nil
+    expect(valid_option?("--oh no")).to be_nil
+    expect(valid_option?("--oh no")).to be_nil
+    expect(valid_option?("-A_a")).to be_nil
+    expect(valid_option?("-B_b")).to be_nil
+    expect(valid_option?("-C_c")).to be_nil
+    expect(valid_option?("--after-context=x9")).to be_nil
+    expect(valid_option?("--before-context=69420x")).to be_nil
+    expect(valid_option?("--context=ohno")).to be_nil
+  end
+end
