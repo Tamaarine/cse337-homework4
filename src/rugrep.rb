@@ -2,6 +2,9 @@
 args = ARGF.argv
 # args = ARGV
 
+usage = "USAGE: ruby rgrep.rb"
+error_regex = "Error: cannot parse regex"
+
 def regex_format?(exp)
   # Returns true if the input string is a regex
   # specified by two quotes in front and the back
