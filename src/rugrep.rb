@@ -127,7 +127,9 @@ end
 
 def get_regexs(args, script_ret)
   # args: The list of commandline argument.
+  # script_ret: the string to append messages to
   # return another array that consists of the regex pattern objects
+  # also return script_ret after is appended
   ret = []
   args.each do |arg|
     if regex_format?(arg)
@@ -144,7 +146,9 @@ end
 
 def open_files(files, script_ret)
   # files: list of files path
+  # script_ret: the string to append messages to
   # return a hash of opened file objects. key = file_name, value = file object
+  # also return script_ret after is appended
   ret = {}
   files.each do |file|
     begin
