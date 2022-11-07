@@ -12,6 +12,7 @@ $option_regexs = {
   "-B_NUM" => $before_c,
   "-C_NUM" => $c
 }
+$script_ret = ""
 
 def regex_format?(exp)
   # exp: A string
@@ -200,6 +201,7 @@ def parseArgs(args)
   else
     return $usage # Handle 4 error case.
   end
+  return $script_ret
 end
 
 puts parseArgs(args)
