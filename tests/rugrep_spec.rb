@@ -416,3 +416,23 @@ describe "Func: open_files" do
     expect(script_ret).to eq "waError: Could not read file tmp/exists.txt\n"
   end
 end
+
+describe "Func: parseArgs" do
+  it "Should return the matching lines" do
+    input = ["tmp/othello.txt", "tmp/example.html", "\"</?body>\"", "\"personal\"", "\"ship\""]
+    exp = "tmp/othello.txt: In personal suit to make me his lieutenant,\ntmp/othello.txt: "\
+          "Is all his soldiership. But he, sir, had the election:\ntmp/othello.txt: "\
+          "And I--God bless the mark!--his Moorship's ancient.\ntmp/example.html: "\
+          "<body>\ntmp/example.html: </body>\n"
+    expect(parseArgs(input)).to eq exp
+  end
+  
+  it "Should return the matching lines" do
+    input = ["tmp/othello.txt", "hehe", "\"</?body>\"", "\"personal\"", "\"ship\""]
+    exp = "Error: Could not read file hehe\n"\
+          "In personal suit to make me his lieutenant,\n"\
+          "Is all his soldiership. But he, sir, had the election:\n"\
+          "And I--God bless the mark!--his Moorship's ancient.\n"
+    expect(parseArgs(input)).to eq exp
+  end
+end
