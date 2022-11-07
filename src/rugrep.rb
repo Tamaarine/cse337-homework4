@@ -125,6 +125,23 @@ def get_files(args)
   args.filter {|arg| not regex_format?(arg) and not (arg[0..1] == "--" or arg[0] == "-")}
 end
 
+def get_regexs(args)
+  # args: The list of commandline argument.
+  # return another array that consists of the regex pattern objects
+  ret = []
+  args.each do |arg|
+    if regex_format?(arg)
+      parsed = parse_regex(arg)
+      if not parsed
+        $script_ret += "Error: cannot parse regex #{arg}\n"
+      else
+        ret.push(parsed)
+      end
+    end
+  end
+  return ret
+end
+
 def parseArgs(args)
   # Handles the 1, 2, 5 error case.
   return $usage if args.length < 2 or not continous_regex?(args)
