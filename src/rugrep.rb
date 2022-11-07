@@ -12,7 +12,6 @@ $option_regexs = {
   "-B_NUM" => $before_c,
   "-C_NUM" => $c
 }
-$script_ret = ""
 
 def regex_format?(exp)
   # exp: A string
@@ -126,7 +125,7 @@ def get_files(args)
   args.filter {|arg| not regex_format?(arg) and not (arg[0..1] == "--" or arg[0] == "-")}
 end
 
-def get_regexs(args)
+def get_regexs(args, script_ret)
   # args: The list of commandline argument.
   # return another array that consists of the regex pattern objects
   ret = []
@@ -134,13 +133,28 @@ def get_regexs(args)
     if regex_format?(arg)
       parsed = parse_regex(arg)
       if not parsed
-        $script_ret += "Error: cannot parse regex #{arg}\n"
+        script_ret += "Error: cannot parse regex #{arg}\n"
       else
         ret.push(parsed)
       end
     end
   end
-  return ret
+  return ret, script_ret
+end
+
+def open_files(files, script_ret)
+  # files: list of files path
+  # return a hash of opened file objects. key = file_name, value = file object
+  ret = {}
+  files.each do |file|
+    begin
+      raise StandardError.new if File.directory?(file)
+      ret[file] = File.open(file)
+    rescue
+      script_ret += "Error: Could not read file #{file}\n"
+    end
+  end
+  return ret, script_ret
 end
 
 def parseArgs(args)
@@ -149,6 +163,14 @@ def parseArgs(args)
   
   option_flags = get_option_flags(args)
   return $usage if not option_flags   # Handle 3 eror case.
+  
+  script_ret = ""     # Passed into func that requires to output to script
+  
+  files = get_files(args)
+  return $usage if files.length == 0
+  opened_files, script_ret = open_files(files, script_ret)
+  
+  regexs, script_ret = get_regexs(args, script_ret)
   
   if sum_flags(option_flags) == 3
     if option_flags["-F"] and option_flags["-v"] and option_flags["-c"]
@@ -201,7 +223,7 @@ def parseArgs(args)
   else
     return $usage # Handle 4 error case.
   end
-  return $script_ret
+  return script_ret
 end
 
 puts parseArgs(args)
