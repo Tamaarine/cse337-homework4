@@ -394,3 +394,25 @@ describe "Func: get_regexs" do
     expect(script_ret).to eq "Error: cannot parse regex \"[\"\nError: cannot parse regex \"?\"\n"
   end
 end
+
+describe "Func: open_files" do
+  it "Should return an empty map with no mappings" do
+    files = ["haha", "xd", "not", "valid"]
+    script_ret = ""
+    ret, script_ret = open_files(files, script_ret)
+    expect(ret).to eq Hash.new
+    expect(script_ret).to eq "Error: Could not read file haha\nError: Could not read file xd\nError: Could not read file not\nError: Could not read file valid\n"
+  end
+  
+  it "Should return an mapping of two files and preserve previous script_ret value" do
+    files = ["tmp/othello.txt", "tmp/exists.txt","tmp/example.html"]
+    script_ret = "wa"
+    ret, script_ret = open_files(files, script_ret)
+    exp = [
+      "tmp/othello.txt",
+      "tmp/example.html"
+    ]
+    expect(ret.keys).to eq exp
+    expect(script_ret).to eq "waError: Could not read file tmp/exists.txt\n"
+  end
+end
