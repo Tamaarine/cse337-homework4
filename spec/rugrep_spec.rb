@@ -351,3 +351,36 @@ describe "Func: get_files" do
     expect(get_files(args)).to eq exp
   end
 end
+
+describe "Func: get_regexs" do
+  before :each do
+    $script_ret = ""
+  end
+
+  it "Should return an empty list" do
+    input = ["hehe", "file/example.txt", "files/html.html"]
+    expect(get_regexs(input)).to eq []
+    expect($script_ret).to eq ""
+  end
+  
+  it "Should return matching list" do
+    input = ["hehe", "file/example.txt", "\"[az]pple\"","files/html.html"]
+    exp = [/[az]pple/]
+    expect(get_regexs(input)).to eq exp
+    expect($script_ret).to eq ""
+  end
+  
+  it "Should return matching list with matching script_ret" do
+    input = ["hehe", "file/example.txt", "\"[az]pple\"", "\"[\"","files/html.html"]
+    exp = [/[az]pple/]
+    expect(get_regexs(input)).to eq exp
+    expect($script_ret).to eq "Error: cannot parse regex \"[\"\n"
+  end
+  
+  it "Should return matching list with matching script_ret" do
+    input = ["hehe", "file/example.txt", "\"[az]pple\"", "\"[\"", "\"?\"","files/html.html"]
+    exp = [/[az]pple/]
+    expect(get_regexs(input)).to eq exp
+    expect($script_ret).to eq "Error: cannot parse regex \"[\"\nError: cannot parse regex \"?\"\n"
+  end
+end
