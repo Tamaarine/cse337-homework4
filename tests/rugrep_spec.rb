@@ -484,4 +484,63 @@ describe "Func: parseArgs" do
     HEREDOC
     expect(parseArgs(input)).to eq exp
   end
+  
+  it "Should return the matching lines inverted matches" do
+    input = ["tmp/othello.txt", "tmp/example.html", "-v", "\"in|mark\"", "\"Cyprus|Cassio\"",
+      "\"</?body>\""
+    ]
+    exp = <<~HEREDOC
+    tmp/othello.txt: Despise me, if I do not. Three great ones of the city,
+    tmp/othello.txt: In personal suit to make me his lieutenant,
+    tmp/othello.txt: Off-capp'd to him: and, by the faith of man,
+    tmp/othello.txt: I know my price, I am worth no worse a place:
+    tmp/othello.txt: Evades them, with a bombast circumstance
+    tmp/othello.txt: Horribly stuff'd with epithets of war;
+    tmp/othello.txt: Nonsuits my mediators; for, 'Certes,' says he,
+    tmp/othello.txt: 'I have already chose my officer.'
+    tmp/othello.txt: And what was he?
+    tmp/othello.txt: Forsooth, a great arithmetician,
+    tmp/othello.txt: Nor the division of a battle knows
+    tmp/othello.txt: As masterly as he: mere prattle, without practise,
+    tmp/othello.txt: Is all his soldiership. But he, sir, had the election:
+    tmp/othello.txt: And I, of whom his eyes had seen the proof
+    tmp/othello.txt: Christian and heathen, must be be-lee'd and calm'd
+    tmp/othello.txt: By debitor and creditor: this counter-caster,
+    tmp/example.html: <!DOCTYPE html>
+    tmp/example.html: <html>
+    tmp/example.html: 
+    tmp/example.html: <p>This is a paragraph.</p>
+    tmp/example.html: <p>This is another paragraph.</p>
+    tmp/example.html: 
+    tmp/example.html: </html>
+    HEREDOC
+    expect(parseArgs(input)).to eq exp
+  end
+  
+  it "Should return the matching lines inverted matches" do
+    input = ["tmp/othello.txt", "tmp/example.html", "-v", "\"in|mark\"", "\"Cyprus|Cassio\"",
+      "\"<.+>\""
+    ]
+    exp = <<~HEREDOC
+    tmp/othello.txt: Despise me, if I do not. Three great ones of the city,
+    tmp/othello.txt: In personal suit to make me his lieutenant,
+    tmp/othello.txt: Off-capp'd to him: and, by the faith of man,
+    tmp/othello.txt: I know my price, I am worth no worse a place:
+    tmp/othello.txt: Evades them, with a bombast circumstance
+    tmp/othello.txt: Horribly stuff'd with epithets of war;
+    tmp/othello.txt: Nonsuits my mediators; for, 'Certes,' says he,
+    tmp/othello.txt: 'I have already chose my officer.'
+    tmp/othello.txt: And what was he?
+    tmp/othello.txt: Forsooth, a great arithmetician,
+    tmp/othello.txt: Nor the division of a battle knows
+    tmp/othello.txt: As masterly as he: mere prattle, without practise,
+    tmp/othello.txt: Is all his soldiership. But he, sir, had the election:
+    tmp/othello.txt: And I, of whom his eyes had seen the proof
+    tmp/othello.txt: Christian and heathen, must be be-lee'd and calm'd
+    tmp/othello.txt: By debitor and creditor: this counter-caster,
+    tmp/example.html: 
+    tmp/example.html: 
+    HEREDOC
+    expect(parseArgs(input)).to eq exp
+  end
 end
