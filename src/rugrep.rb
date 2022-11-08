@@ -161,7 +161,7 @@ def open_files(files, script_ret)
   return ret, script_ret
 end
 
-def do_matching(files, regexs, script_ret)
+def do_matching(files, regexs, script_ret, optional_flag)
   # files: Map of opened files object
   # regexs: List of regex objects
   # script_ret: the string to append messages to
@@ -169,8 +169,14 @@ def do_matching(files, regexs, script_ret)
   if files.length == 1 # No prefix needed
     key = files.keys[0]
     files[key].each_line do |line|
-      ret = regexs.find {|reg| line =~ reg}
-      script_ret += "#{line.strip}\n" if ret
+      case optional_flag
+      when "-v"
+        ret = regexs.all? {|reg| line !~ reg}
+        script_ret += "#{line.strip}\n" if ret
+      else
+        ret = regexs.find {|reg| line =~ reg}
+        script_ret += "#{line.strip}\n" if ret
+      end
     end
     files[key].close
   else
@@ -228,7 +234,7 @@ def parseArgs(args)
     end
   elsif sum_flags(option_flags) == 1
     if option_flags["-v"]
-      "-v"
+      script_ret = do_matching(opened_files, regexs, script_ret, "-v")
     elsif option_flags["-c"]
       "-c"
     elsif option_flags["-l"]
@@ -247,7 +253,7 @@ def parseArgs(args)
       "-C_NUM"
     end
   elsif sum_flags(option_flags) == 0
-    script_ret = do_matching(opened_files, regexs, script_ret)
+    script_ret = do_matching(opened_files, regexs, script_ret, "")
   else
     return $usage # Handle 4 error case.
   end
