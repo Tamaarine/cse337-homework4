@@ -182,8 +182,14 @@ def do_matching(files, regexs, script_ret, optional_flag)
   else
     files.each do |file, file_o|
       file_o.each_line do |line|
-        ret = regexs.find {|reg| line =~ reg}
-        script_ret += "#{file}: #{line.strip}\n" if ret
+        case optional_flag
+        when "-v"
+          ret = regexs.all? {|reg| line !~ reg}
+          script_ret += "#{file}: #{line.strip}\n" if ret
+        else
+          ret = regexs.find {|reg| line =~ reg}
+          script_ret += "#{file}: #{line.strip}\n" if ret
+        end
       end
       file_o.close
     end
