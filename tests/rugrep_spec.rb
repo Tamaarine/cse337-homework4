@@ -543,4 +543,32 @@ describe "Func: parseArgs" do
     HEREDOC
     expect(parseArgs(input)).to eq exp
   end
+  
+  it "Should return a number of matching lines" do
+    input = ["tmp/othello.txt", "-c", "\"in|mark\"", "\"Cyprus|Cassio\""]
+    exp = "10\n"
+    expect(parseArgs(input)).to eq exp
+  end
+  
+  it "Should return a number of matching lines" do
+    input = ["tmp/othello.txt", "tmp/example.html", "-c", "\"in|mark\"", "\"Cyprus|Cassio\"",
+      "\"<.+>\""
+    ]
+    exp = <<~HEREDOC
+    tmp/othello.txt: 10
+    tmp/example.html: 7
+    HEREDOC
+    expect(parseArgs(input)).to eq exp
+  end
+  
+  it "Should return a number of matching lines" do
+    input = ["tmp/othello.txt", "tmp/example.html", "tmp/sample.html",
+      "-c", "\"in|mark\"", "\"Cyprus|Cassio\"", "\"<.+>\""
+    ]
+    exp = <<~HEREDOC
+    tmp/othello.txt: 10
+    tmp/example.html: 7
+    tmp/sample.html: 88
+    HEREDOC
+  end
 end
