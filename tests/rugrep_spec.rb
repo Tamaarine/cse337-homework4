@@ -429,10 +429,59 @@ describe "Func: parseArgs" do
   
   it "Should return the matching lines" do
     input = ["tmp/othello.txt", "hehe", "\"</?body>\"", "\"personal\"", "\"ship\""]
-    exp = "Error: Could not read file hehe\n"\
-          "In personal suit to make me his lieutenant,\n"\
-          "Is all his soldiership. But he, sir, had the election:\n"\
-          "And I--God bless the mark!--his Moorship's ancient.\n"
+    exp = <<~HEREDOC
+    Error: Could not read file hehe
+    In personal suit to make me his lieutenant,
+    Is all his soldiership. But he, sir, had the election:
+    And I--God bless the mark!--his Moorship's ancient.
+    HEREDOC
+    expect(parseArgs(input)).to eq exp
+  end
+  
+  it "Should return the matching lines inverted matches" do
+    input = ["tmp/othello.txt", "-v", "\"in|mark\""]
+    exp = <<~HEREDOC
+    Despise me, if I do not. Three great ones of the city,
+    In personal suit to make me his lieutenant,
+    Off-capp'd to him: and, by the faith of man,
+    I know my price, I am worth no worse a place:
+    Evades them, with a bombast circumstance
+    Horribly stuff'd with epithets of war;
+    Nonsuits my mediators; for, 'Certes,' says he,
+    'I have already chose my officer.'
+    And what was he?
+    Forsooth, a great arithmetician,
+    Nor the division of a battle knows
+    As masterly as he: mere prattle, without practise,
+    Is all his soldiership. But he, sir, had the election:
+    And I, of whom his eyes had seen the proof
+    At Rhodes, at Cyprus and on other grounds
+    Christian and heathen, must be be-lee'd and calm'd
+    By debitor and creditor: this counter-caster,
+    HEREDOC
+    expect(parseArgs(input)).to eq exp
+  end
+  
+  it "Should return the matching lines inverted matches" do
+    input = ["tmp/othello.txt", "-v", "\"in|mark\"", "\"Cyprus|Cassio\""]
+    exp = <<~HEREDOC
+    Despise me, if I do not. Three great ones of the city,
+    In personal suit to make me his lieutenant,
+    Off-capp'd to him: and, by the faith of man,
+    I know my price, I am worth no worse a place:
+    Evades them, with a bombast circumstance
+    Horribly stuff'd with epithets of war;
+    Nonsuits my mediators; for, 'Certes,' says he,
+    'I have already chose my officer.'
+    And what was he?
+    Forsooth, a great arithmetician,
+    Nor the division of a battle knows
+    As masterly as he: mere prattle, without practise,
+    Is all his soldiership. But he, sir, had the election:
+    And I, of whom his eyes had seen the proof
+    Christian and heathen, must be be-lee'd and calm'd
+    By debitor and creditor: this counter-caster,
+    HEREDOC
     expect(parseArgs(input)).to eq exp
   end
 end
