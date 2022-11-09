@@ -635,7 +635,130 @@ describe "Func: parseArgs" do
     exp = <<~HEREDOC
     example.html
     HEREDOC
-    p input
+    expect(parseArgs(input)).to eq exp
+  end
+  
+  it "Should return the matching output" do
+    input = ["tmp/othello.txt", "-o", "\"personal\"", "\"\\d{4}\"", "\"in|mark\""]
+    exp = <<~HEREDOC
+    personal
+    in
+    in
+    in
+    in
+    in
+    in
+    in
+    in
+    mark
+    HEREDOC
+    expect(parseArgs(input)).to eq exp
+  end
+  
+  it "Should return the matching output" do
+    input = ["tmp/sample.html", "-o", "\"personal\"", "\"\\d{4}\"", "\"in|mark\""]
+    exp = <<~HEREDOC
+    0014
+    in
+    1252
+    in
+    in
+    in
+    in
+    in
+    in
+    in
+    in
+    in
+    in
+    in
+    in
+    in
+    in
+    in
+    in
+    in
+    in
+    in
+    in
+    in
+    in
+    in
+    in
+    in
+    in
+    in
+    in
+    in
+    in
+    in
+    in
+    in
+    in
+    in
+    HEREDOC
+    expect(parseArgs(input)).to eq exp
+  end
+  
+  it "Should return the matching output" do
+    input = ["tmp/sample.html", "-o", "\"personal\"", "\"in|mark\"", "\"\\d{4}\""]
+    exp = <<~HEREDOC
+    in
+    0014
+    in
+    1252
+    in
+    in
+    in
+    in
+    in
+    in
+    in
+    in
+    in
+    in
+    in
+    in
+    in
+    in
+    in
+    in
+    in
+    in
+    in
+    in
+    in
+    in
+    in
+    in
+    in
+    in
+    in
+    in
+    in
+    in
+    in
+    in
+    in
+    in
+    HEREDOC
+    expect(parseArgs(input)).to eq exp
+  end
+  
+  it "Should return the matching output" do
+    input = ["tmp/example.html", "tmp/othello.txt", "-o", "\"personal\"", "\"Cyprus|Cassio\"", "\"<.+>\""]
+    exp = <<~HEREDOC
+    tmp/example.html: <!DOCTYPE html>
+    tmp/example.html: <html>
+    tmp/example.html: <body>
+    tmp/example.html: <p>This is a paragraph.</p>
+    tmp/example.html: <p>This is another paragraph.</p>
+    tmp/example.html: </body>
+    tmp/example.html: </html>
+    tmp/othello.txt: personal
+    tmp/othello.txt: Cassio
+    tmp/othello.txt: Cyprus
+    HEREDOC
     expect(parseArgs(input)).to eq exp
   end
 end
