@@ -161,7 +161,35 @@ def open_files(files, script_ret)
   return ret, script_ret
 end
 
-def do_matching(files, regexs, script_ret, optional_flag)
+def before_context(matched_indices, spacing, all_lines, script_ret, filename)
+  # matched_indices: list of indices that contained the regex match
+  # spacing: how many lines before
+  # all_lines: all of the lines of the file
+  # script_ret: the string to append messages to
+  # filename: the file we are operating on
+  matched_indices.length.times do |i|
+    actual_index = matched_indices[i]
+    if i == 0
+      # 1st ele, no need to care overlap
+      final = actual_index - spacing < 0 ? 0 : actual_index - spacing
+    else
+      prev_index = matched_indices[i - 1]
+      # Overlapped, no need insert --
+      if actual_index - spacing <= prev_index + 1
+        final = prev_index + 1
+      else
+        # Didn't overlap insert --
+        script_ret += "--\n"
+        final = actual_index - spacing < 0 ? 0 : actual_index - spacing
+      end
+    end
+    ret = all_lines[final..actual_index].map {|line| filename == "" ? "#{line.rstrip}\n" : "#{filename}: #{line.rstrip}\n"}
+    script_ret += ret.join("")
+  end
+  script_ret
+end
+
+def do_matching(files, regexs, script_ret, optional_flag, spacing=0)
   # files: Map of opened files object
   # regexs: List of regex objects
   # script_ret: the string to append messages to
@@ -169,11 +197,12 @@ def do_matching(files, regexs, script_ret, optional_flag)
   if files.length == 1 # No prefix needed
     key = files.keys[0]
     count = 0
-    files[key].each_line do |line|
+    matched_indices = []
+    files[key].each_with_index do |line, i|
       case optional_flag
       when "-v"
         ret = regexs.all? {|reg| line !~ reg}
-        script_ret += "#{line.strip}\n" if ret
+        script_ret += "#{line.rstrip}\n" if ret
       when "-c", "-l", "-L"
         ret = regexs.find {|reg| line =~ reg}
         count += 1 if ret
@@ -184,24 +213,29 @@ def do_matching(files, regexs, script_ret, optional_flag)
         end
       when "-F"
         ret = regexs.find {|reg| line.index(reg) != nil}
-        script_ret += "#{line.strip}\n" if ret
+        script_ret += "#{line.rstrip}\n" if ret
+      when "-A_NUM", "-B_NUM", "-C_NUM"
+        ret = regexs.find {|reg| line =~ reg}
+        matched_indices.push(i) if ret
       else
         ret = regexs.find {|reg| line =~ reg}
-        script_ret += "#{line.strip}\n" if ret
+        script_ret += "#{line.rstrip}\n" if ret
       end
     end
     script_ret += "#{count}\n" if optional_flag == "-c"
     script_ret += "#{File.basename(files[key])}\n" if optional_flag == "-l" and count > 0
     script_ret += "#{File.basename(files[key])}\n" if optional_flag == "-L" and count == 0
+    script_ret = before_context(matched_indices, spacing, IO.readlines(key), script_ret, "") if optional_flag == "-B_NUM"
     files[key].close
   else
     files.each do |file, file_o|
       count = 0
-      file_o.each_line do |line|
+      matched_indices = []
+      file_o.each_with_index do |line, i|
         case optional_flag
         when "-v"
           ret = regexs.all? {|reg| line !~ reg}
-          script_ret += "#{file}: #{line.strip}\n" if ret
+          script_ret += "#{file}: #{line.rstrip}\n" if ret
         when "-c", "-l", "-L"
           ret = regexs.find {|reg| line =~ reg}
           count += 1 if ret
@@ -212,15 +246,19 @@ def do_matching(files, regexs, script_ret, optional_flag)
           end
         when "-F"
           ret = regexs.find {|reg| line.index(reg) != nil}
-          script_ret += "#{line.strip}\n" if ret
+          script_ret += "#{line.rstrip}\n" if ret
+        when "-A_NUM", "-B_NUM", "-C_NUM"
+          ret = regexs.find {|reg| line =~ reg}
+          matched_indices.push(i) if ret
         else
           ret = regexs.find {|reg| line =~ reg}
-          script_ret += "#{file}: #{line.strip}\n" if ret
+          script_ret += "#{file}: #{line.rstrip}\n" if ret
         end
       end
       script_ret += "#{file}: #{count}\n" if optional_flag == "-c"
       script_ret += "#{File.basename(file_o)}\n" if optional_flag == "-l" and count > 0
       script_ret += "#{File.basename(file_o)}\n" if optional_flag == "-L" and count == 0
+      script_ret = before_context(matched_indices, spacing, IO.readlines(file), script_ret, file) if optional_flag == "-B_NUM"
       file_o.close
     end
   end
@@ -286,7 +324,7 @@ def parseArgs(args)
     elsif option_flags["-A_NUM"]
       "-A_NUM"
     elsif option_flags["-B_NUM"]
-      "-B_NUM"
+      script_ret = do_matching(opened_files, regexs, script_ret, "-B_NUM", option_flags["-B_NUM_P"])
     else
       "-C_NUM"
     end
