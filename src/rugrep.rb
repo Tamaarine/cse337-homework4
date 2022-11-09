@@ -174,7 +174,7 @@ def do_matching(files, regexs, script_ret, optional_flag)
       when "-v"
         ret = regexs.all? {|reg| line !~ reg}
         script_ret += "#{line.strip}\n" if ret
-      when "-c", "-l"
+      when "-c", "-l", "-L"
         ret = regexs.find {|reg| line =~ reg}
         count += 1 if ret
       else
@@ -184,6 +184,7 @@ def do_matching(files, regexs, script_ret, optional_flag)
     end
     script_ret += "#{count}\n" if optional_flag == "-c"
     script_ret += "#{File.basename(files[key])}\n" if optional_flag == "-l" and count > 0
+    script_ret += "#{File.basename(files[key])}\n" if optional_flag == "-L" and count == 0
     files[key].close
   else
     files.each do |file, file_o|
@@ -193,7 +194,7 @@ def do_matching(files, regexs, script_ret, optional_flag)
         when "-v"
           ret = regexs.all? {|reg| line !~ reg}
           script_ret += "#{file}: #{line.strip}\n" if ret
-        when "-c", "-l"
+        when "-c", "-l", "-L"
           ret = regexs.find {|reg| line =~ reg}
           count += 1 if ret
         else
@@ -203,6 +204,7 @@ def do_matching(files, regexs, script_ret, optional_flag)
       end
       script_ret += "#{file}: #{count}\n" if optional_flag == "-c"
       script_ret += "#{File.basename(file_o)}\n" if optional_flag == "-l" and count > 0
+      script_ret += "#{File.basename(file_o)}\n" if optional_flag == "-L" and count == 0
       file_o.close
     end
   end
@@ -258,7 +260,7 @@ def parseArgs(args)
     elsif option_flags["-l"]
       script_ret = do_matching(opened_files, regexs, script_ret, "-l")
     elsif option_flags["-L"]
-      "-L"
+      script_ret = do_matching(opened_files, regexs, script_ret, "-L")
     elsif option_flags["-o"]
       "-o"
     elsif option_flags["-F"]
