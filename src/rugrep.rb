@@ -177,6 +177,11 @@ def do_matching(files, regexs, script_ret, optional_flag)
       when "-c", "-l", "-L"
         ret = regexs.find {|reg| line =~ reg}
         count += 1 if ret
+      when "-o"
+        regexs.each do |reg|
+          matches = line.scan(reg)
+          matches.each {|match| script_ret += "#{match}\n"}
+        end
       else
         ret = regexs.find {|reg| line =~ reg}
         script_ret += "#{line.strip}\n" if ret
@@ -197,6 +202,11 @@ def do_matching(files, regexs, script_ret, optional_flag)
         when "-c", "-l", "-L"
           ret = regexs.find {|reg| line =~ reg}
           count += 1 if ret
+        when "-o"
+          regexs.each do |reg|
+            matches = line.scan(reg)
+            matches.each {|match| script_ret += "#{file}: #{match}\n"}
+          end
         else
           ret = regexs.find {|reg| line =~ reg}
           script_ret += "#{file}: #{line.strip}\n" if ret
@@ -262,7 +272,7 @@ def parseArgs(args)
     elsif option_flags["-L"]
       script_ret = do_matching(opened_files, regexs, script_ret, "-L")
     elsif option_flags["-o"]
-      "-o"
+      script_ret = do_matching(opened_files, regexs, script_ret, "-o")
     elsif option_flags["-F"]
       "-F"
     elsif option_flags["-A_NUM"]
