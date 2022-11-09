@@ -604,4 +604,38 @@ describe "Func: parseArgs" do
     HEREDOC
     expect(parseArgs(input)).to eq exp
   end
+  
+  it "Should return all files because none of them matches" do
+    input = ["tmp/othello.txt", "tmp/example.html", "tmp/sample.html",
+      "-L", "\"axe\""
+    ]
+    exp = <<~HEREDOC
+    othello.txt
+    example.html
+    sample.html
+    HEREDOC
+    expect(parseArgs(input)).to eq exp
+  end
+  
+  it "Should return only example.html and sample.html" do
+    input = ["tmp/othello.txt", "tmp/example.html", "tmp/sample.html",
+      "-L", "\"personal\""
+    ]
+    exp = <<~HEREDOC
+    example.html
+    sample.html
+    HEREDOC
+    expect(parseArgs(input)).to eq exp
+  end
+  
+  it "Should return only example.html and sample.html" do
+    input = ["tmp/othello.txt", "tmp/example.html", "tmp/sample.html",
+      "-L", "\"personal\"", "\"\\d{4}\""
+    ]
+    exp = <<~HEREDOC
+    example.html
+    HEREDOC
+    p input
+    expect(parseArgs(input)).to eq exp
+  end
 end
