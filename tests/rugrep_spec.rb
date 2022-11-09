@@ -805,4 +805,59 @@ describe "Func: parseArgs" do
     HEREDOC
     expect(parseArgs(input)).to eq exp
   end
+  
+  it "Should return the matching output" do
+    input = ["tmp/othello.txt", "-B_2", "\"spinster\""]
+    exp = <<~HEREDOC
+    That never set a squadron in the field,
+    Nor the division of a battle knows
+    More than a spinster; unless the bookish theoric,
+    HEREDOC
+    expect(parseArgs(input)).to eq exp
+  end
+  
+  it "Should return the matching output" do
+    input = ["tmp/othello.txt", "tmp/example.html", "-B_2", "\"spinster\""]
+    exp = <<~HEREDOC
+    tmp/othello.txt: That never set a squadron in the field,
+    tmp/othello.txt: Nor the division of a battle knows
+    tmp/othello.txt: More than a spinster; unless the bookish theoric,
+    HEREDOC
+    expect(parseArgs(input)).to eq exp
+  end
+  
+  it "Should return the matching output" do
+    input = ["tmp/othello.txt", "tmp/example.html", "-B_2", "\"spinster\"",
+      "\"paragraph\""
+    ]
+    exp = <<~HEREDOC
+    tmp/othello.txt: That never set a squadron in the field,
+    tmp/othello.txt: Nor the division of a battle knows
+    tmp/othello.txt: More than a spinster; unless the bookish theoric,
+    tmp/example.html: <body>
+    tmp/example.html: 
+    tmp/example.html: <p>This is a paragraph.</p>
+    tmp/example.html: <p>This is another paragraph.</p>
+    HEREDOC
+    expect(parseArgs(input)).to eq exp
+  end
+  
+  it "Should return the matching output" do
+    input = ["tmp/othello.txt", "tmp/sample.html", "-B_2", "\"spinster\"",
+      "\"text/css\""
+    ]
+    exp = <<~HEREDOC
+    tmp/othello.txt: That never set a squadron in the field,
+    tmp/othello.txt: Nor the division of a battle knows
+    tmp/othello.txt: More than a spinster; unless the bookish theoric,
+    tmp/sample.html: //-->
+    tmp/sample.html: </script>
+    tmp/sample.html: <style type="text/css">
+    --
+    tmp/sample.html: //-->
+    tmp/sample.html: </script>
+    tmp/sample.html: <style type="text/css">
+    HEREDOC
+    expect(parseArgs(input)).to eq exp
+  end
 end
