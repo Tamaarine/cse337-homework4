@@ -570,5 +570,38 @@ describe "Func: parseArgs" do
     tmp/example.html: 7
     tmp/sample.html: 88
     HEREDOC
+    expect(parseArgs(input)).to eq exp
+  end
+  
+  it "Should return the matching expected files" do
+    input = ["tmp/othello.txt", "tmp/example.html", "tmp/sample.html",
+      "-l", "\"in|mark\"", "\"Cyprus|Cassio\""
+    ]
+    exp = <<~HEREDOC
+    othello.txt
+    sample.html
+    HEREDOC
+    expect(parseArgs(input)).to eq exp
+  end
+  
+  it "Should return the matching expected files" do
+    input = ["tmp/othello.txt", "tmp/example.html", "tmp/sample.html",
+      "-l", "\"in|mark\"", "\"Cyprus|Cassio\"", "\"<.+>\""
+    ]
+    exp = <<~HEREDOC
+    othello.txt
+    example.html
+    sample.html
+    HEREDOC
+    expect(parseArgs(input)).to eq exp
+  end
+  
+  it "Should return no matching files" do
+    input = ["tmp/othello.txt", "tmp/example.html", "tmp/sample.html",
+      "-l", "\"axe\""
+    ]
+    exp = <<~HEREDOC
+    HEREDOC
+    expect(parseArgs(input)).to eq exp
   end
 end
