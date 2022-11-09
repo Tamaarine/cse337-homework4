@@ -761,4 +761,48 @@ describe "Func: parseArgs" do
     HEREDOC
     expect(parseArgs(input)).to eq exp
   end
+  
+  it "Should return the matching output" do
+    input = ["tmp/example.html", "-F", "\"\n\""]
+    exp = <<~HEREDOC
+    <!DOCTYPE html>
+    <html>
+    <body>
+
+    <p>This is a paragraph.</p>
+    <p>This is another paragraph.</p>
+
+    </body>
+    </html>
+    HEREDOC
+    expect(parseArgs(input)).to eq exp
+  end
+  
+  it "Should return the matching output" do
+    input = ["tmp/example.html", "-F", "\"\\n\""]
+    exp = <<~HEREDOC
+    HEREDOC
+    expect(parseArgs(input)).to eq exp
+  end
+  
+  it "Should return the matching output" do
+    input = ["tmp/example.html", "tmp/poem.txt", "-F", "\"\\n\"",
+      "\"<.+>\""
+    ]
+    exp = <<~HEREDOC
+    <.+>
+    HEREDOC
+    expect(parseArgs(input)).to eq exp
+  end
+  
+  it "Should return the matching output" do
+    input = ["tmp/example.html", "tmp/poem.txt", "-F", "\"\\n\"",
+      "\"<.+>\"", "\"no|light\""
+    ]
+    exp = <<~HEREDOC
+    no|light
+    <.+>
+    HEREDOC
+    expect(parseArgs(input)).to eq exp
+  end
 end
