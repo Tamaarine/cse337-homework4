@@ -182,6 +182,9 @@ def do_matching(files, regexs, script_ret, optional_flag)
           matches = line.scan(reg)
           matches.each {|match| script_ret += "#{match}\n"}
         end
+      when "-F"
+        ret = regexs.find {|reg| line.index(reg) != nil}
+        script_ret += "#{line.strip}\n" if ret
       else
         ret = regexs.find {|reg| line =~ reg}
         script_ret += "#{line.strip}\n" if ret
@@ -207,6 +210,9 @@ def do_matching(files, regexs, script_ret, optional_flag)
             matches = line.scan(reg)
             matches.each {|match| script_ret += "#{file}: #{match}\n"}
           end
+        when "-F"
+          ret = regexs.find {|reg| line.index(reg) != nil}
+          script_ret += "#{line.strip}\n" if ret
         else
           ret = regexs.find {|reg| line =~ reg}
           script_ret += "#{file}: #{line.strip}\n" if ret
@@ -274,7 +280,9 @@ def parseArgs(args)
     elsif option_flags["-o"]
       script_ret = do_matching(opened_files, regexs, script_ret, "-o")
     elsif option_flags["-F"]
-      "-F"
+      regexs = args.filter {|arg| regex_format?(arg)}
+      regexs = regexs.map {|arg| arg[1...-1]}
+      script_ret = do_matching(opened_files, regexs, script_ret, "-F")
     elsif option_flags["-A_NUM"]
       "-A_NUM"
     elsif option_flags["-B_NUM"]
