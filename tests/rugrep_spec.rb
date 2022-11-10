@@ -860,4 +860,97 @@ describe "Func: parseArgs" do
     HEREDOC
     expect(parseArgs(input)).to eq exp
   end
+  
+  it "Should return the matching output" do
+    input = ["tmp/othello.txt", "tmp/sample.html", "-A_2", "\"man\"",
+      "\"text/css\"", "\"window.gbWhTopic\""
+    ]
+    exp = <<~HEREDOC
+    tmp/othello.txt: Off-capp'd to him: and, by the faith of man,
+    tmp/othello.txt: I know my price, I am worth no worse a place:
+    tmp/othello.txt: But he; as loving his own pride and purposes,
+    tmp/sample.html: <style type="text/css">
+    tmp/sample.html: <!--
+    tmp/sample.html: img_whs1 { border:none; width:301px; height:295px; float:none; }
+    --
+    tmp/sample.html: <style type="text/css">
+    tmp/sample.html: <!--
+    tmp/sample.html: div.WebHelpPopupMenu { position:absolute; left:0px; top:0px; z-index:4; visibility:hidden; }
+    --
+    tmp/sample.html: if (window.gbWhTopic)
+    tmp/sample.html: {
+    tmp/sample.html:     if (window.setRelStartPage)
+    HEREDOC
+    expect(parseArgs(input)).to eq exp
+  end
+  
+  it "Should return the matching output" do
+    input = ["tmp/othello_m.txt", "-A_0", "\"i\""]
+    exp = <<~HEREDOC
+    Despise me, if I do not. Three great ones of the city,
+    In personal suit to make me his lieutenant,
+    Off-capp'd to him: and, by the faith of man,
+    I know my price, I am worth no worse a place:
+    But he; as loving his own pride and purposes,
+    Evades them, with a bombast circumstance
+    Horribly stuff'd with epithets of war;
+    And, in conclusion,
+    Nonsuits my mediators; for, 'Certes,' says he,
+    'I have already chose my officer.'
+    --
+    Forsooth, a great arithmetician,
+    One Michael Cassio, a Florentine,
+    A fellow almost damn'd in a fair wife;
+    That never set a squadron in the field,
+    Nor the division of a battle knows
+    More than a spinster; unless the bookish theoric,
+    Wherein the toged consuls can propose
+    As masterly as he: mere prattle, without practise,
+    Is all his soldiership. But he, sir, had the election:
+    And I, of whom his eyes had seen the proof
+    --
+    Christian and heathen, must be be-lee'd and calm'd
+    By debitor and creditor: this counter-caster,
+    He, in good time, must his lieutenant be,
+    And I--God bless the mark!--his Moorship's ancient.
+    --
+    i love you!
+    HEREDOC
+    expect(parseArgs(input)).to eq exp
+  end
+  
+  it "Should return the matching output" do
+    input = ["tmp/othello_m.txt", "-A_1", "\"i\""]
+    exp = <<~HEREDOC
+    Despise me, if I do not. Three great ones of the city,
+    In personal suit to make me his lieutenant,
+    Off-capp'd to him: and, by the faith of man,
+    I know my price, I am worth no worse a place:
+    But he; as loving his own pride and purposes,
+    Evades them, with a bombast circumstance
+    Horribly stuff'd with epithets of war;
+    And, in conclusion,
+    Nonsuits my mediators; for, 'Certes,' says he,
+    'I have already chose my officer.'
+    And what was he?
+    Forsooth, a great arithmetician,
+    One Michael Cassio, a Florentine,
+    A fellow almost damn'd in a fair wife;
+    That never set a squadron in the field,
+    Nor the division of a battle knows
+    More than a spinster; unless the bookish theoric,
+    Wherein the toged consuls can propose
+    As masterly as he: mere prattle, without practise,
+    Is all his soldiership. But he, sir, had the election:
+    And I, of whom his eyes had seen the proof
+    At Rhodes, at Cyprus and on other grounds
+    Christian and heathen, must be be-lee'd and calm'd
+    By debitor and creditor: this counter-caster,
+    He, in good time, must his lieutenant be,
+    And I--God bless the mark!--his Moorship's ancient.
+    --
+    i love you!
+    HEREDOC
+    expect(parseArgs(input)).to eq exp
+  end
 end
