@@ -2,7 +2,7 @@
 args = ARGF.argv
 # args = ARGV
 
-$usage = "USAGE: ruby rgrep.rb"
+$usage = "USAGE: ruby rugrep.rb"
 $error_regex = "Error: cannot parse regex"
 $after_c = /\A(\-A_|\-\-after\-context=)(\d*)\z/
 $before_c = /\A(\-B_|\-\-before\-context=)(\d*)\z/

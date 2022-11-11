@@ -1022,4 +1022,9 @@ describe "Func: parseArgs" do
     HEREDOC
     expect(parseArgs(input)).to eq exp
   end
+  
+  it "Should return usage" do
+    input = ["-v", "-d"]
+    expect(parseArgs(input)).to eq "USAGE: ruby rugrep.rb"
+  end
 end
