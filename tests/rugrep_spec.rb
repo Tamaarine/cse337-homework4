@@ -837,6 +837,9 @@ describe "Func: parseArgs" do
     tmp/example.html: <body>
     tmp/example.html: 
     tmp/example.html: <p>This is a paragraph.</p>
+    --
+    tmp/example.html: 
+    tmp/example.html: <p>This is a paragraph.</p>
     tmp/example.html: <p>This is another paragraph.</p>
     HEREDOC
     expect(parseArgs(input)).to eq exp
@@ -888,30 +891,51 @@ describe "Func: parseArgs" do
     input = ["tmp/othello_m.txt", "-A_0", "\"i\""]
     exp = <<~HEREDOC
     Despise me, if I do not. Three great ones of the city,
+    --
     In personal suit to make me his lieutenant,
+    --
     Off-capp'd to him: and, by the faith of man,
+    --
     I know my price, I am worth no worse a place:
+    --
     But he; as loving his own pride and purposes,
+    --
     Evades them, with a bombast circumstance
+    --
     Horribly stuff'd with epithets of war;
+    --
     And, in conclusion,
+    --
     Nonsuits my mediators; for, 'Certes,' says he,
+    --
     'I have already chose my officer.'
     --
     Forsooth, a great arithmetician,
+    --
     One Michael Cassio, a Florentine,
+    --
     A fellow almost damn'd in a fair wife;
+    --
     That never set a squadron in the field,
+    --
     Nor the division of a battle knows
+    --
     More than a spinster; unless the bookish theoric,
+    --
     Wherein the toged consuls can propose
+    --
     As masterly as he: mere prattle, without practise,
+    --
     Is all his soldiership. But he, sir, had the election:
+    --
     And I, of whom his eyes had seen the proof
     --
     Christian and heathen, must be be-lee'd and calm'd
+    --
     By debitor and creditor: this counter-caster,
+    --
     He, in good time, must his lieutenant be,
+    --
     And I--God bless the mark!--his Moorship's ancient.
     --
     i love you!
@@ -924,30 +948,75 @@ describe "Func: parseArgs" do
     exp = <<~HEREDOC
     Despise me, if I do not. Three great ones of the city,
     In personal suit to make me his lieutenant,
+    --
+    In personal suit to make me his lieutenant,
+    Off-capp'd to him: and, by the faith of man,
+    --
     Off-capp'd to him: and, by the faith of man,
     I know my price, I am worth no worse a place:
+    --
+    I know my price, I am worth no worse a place:
+    But he; as loving his own pride and purposes,
+    --
     But he; as loving his own pride and purposes,
     Evades them, with a bombast circumstance
+    --
+    Evades them, with a bombast circumstance
+    Horribly stuff'd with epithets of war;
+    --
     Horribly stuff'd with epithets of war;
     And, in conclusion,
+    --
+    And, in conclusion,
+    Nonsuits my mediators; for, 'Certes,' says he,
+    --
     Nonsuits my mediators; for, 'Certes,' says he,
     'I have already chose my officer.'
+    --
+    'I have already chose my officer.'
     And what was he?
+    --
     Forsooth, a great arithmetician,
     One Michael Cassio, a Florentine,
+    --
+    One Michael Cassio, a Florentine,
+    A fellow almost damn'd in a fair wife;
+    --
     A fellow almost damn'd in a fair wife;
     That never set a squadron in the field,
+    --
+    That never set a squadron in the field,
+    Nor the division of a battle knows
+    --
     Nor the division of a battle knows
     More than a spinster; unless the bookish theoric,
+    --
+    More than a spinster; unless the bookish theoric,
+    Wherein the toged consuls can propose
+    --
     Wherein the toged consuls can propose
     As masterly as he: mere prattle, without practise,
+    --
+    As masterly as he: mere prattle, without practise,
+    Is all his soldiership. But he, sir, had the election:
+    --
     Is all his soldiership. But he, sir, had the election:
     And I, of whom his eyes had seen the proof
+    --
+    And I, of whom his eyes had seen the proof
     At Rhodes, at Cyprus and on other grounds
+    --
     Christian and heathen, must be be-lee'd and calm'd
     By debitor and creditor: this counter-caster,
+    --
+    By debitor and creditor: this counter-caster,
+    He, in good time, must his lieutenant be,
+    --
     He, in good time, must his lieutenant be,
     And I--God bless the mark!--his Moorship's ancient.
+    --
+    And I--God bless the mark!--his Moorship's ancient.
+    --
     --
     i love you!
     HEREDOC
