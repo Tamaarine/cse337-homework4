@@ -953,4 +953,73 @@ describe "Func: parseArgs" do
     HEREDOC
     expect(parseArgs(input)).to eq exp
   end
+  
+  it "Should return the matching output" do
+    input = ["tmp/othello_m.txt", "-C_1", "\"Cyprus\"",
+      "\"says he\""
+    ]
+    exp = <<~HEREDOC
+    And, in conclusion,
+    Nonsuits my mediators; for, 'Certes,' says he,
+    'I have already chose my officer.'
+    --
+    And I, of whom his eyes had seen the proof
+    At Rhodes, at Cyprus and on other grounds
+    Christian and heathen, must be be-lee'd and calm'd
+    HEREDOC
+    expect(parseArgs(input)).to eq exp
+  end
+  
+  it "Should return the matching output" do
+    input = ["tmp/othello.txt", "-C_5", "\"Cyprus\"",
+      "\"says he\""
+    ]
+    exp = <<~HEREDOC
+    I know my price, I am worth no worse a place:
+    But he; as loving his own pride and purposes,
+    Evades them, with a bombast circumstance
+    Horribly stuff'd with epithets of war;
+    And, in conclusion,
+    Nonsuits my mediators; for, 'Certes,' says he,
+    'I have already chose my officer.'
+    And what was he?
+    Forsooth, a great arithmetician,
+    One Michael Cassio, a Florentine,
+    A fellow almost damn'd in a fair wife;
+    --
+    More than a spinster; unless the bookish theoric,
+    Wherein the toged consuls can propose
+    As masterly as he: mere prattle, without practise,
+    Is all his soldiership. But he, sir, had the election:
+    And I, of whom his eyes had seen the proof
+    At Rhodes, at Cyprus and on other grounds
+    Christian and heathen, must be be-lee'd and calm'd
+    By debitor and creditor: this counter-caster,
+    He, in good time, must his lieutenant be,
+    And I--God bless the mark!--his Moorship's ancient.
+    HEREDOC
+    expect(parseArgs(input)).to eq exp
+  end
+  
+  it "Should return the matching output" do
+    input = ["tmp/othello.txt", "tmp/sample.html","-C_1", "\"ancient\"",
+      "\"grounds\"", "\"</body>\"", "\"wiredminds.count()\""
+    ]
+    exp = <<~HEREDOC
+    tmp/othello.txt: And I, of whom his eyes had seen the proof
+    tmp/othello.txt: At Rhodes, at Cyprus and on other grounds
+    tmp/othello.txt: Christian and heathen, must be be-lee'd and calm'd
+    --
+    tmp/othello.txt: He, in good time, must his lieutenant be,
+    tmp/othello.txt: And I--God bless the mark!--his Moorship's ancient.
+    tmp/sample.html: wm_track_alt='';
+    tmp/sample.html: wiredminds.count();
+    tmp/sample.html: // -->
+    --
+    tmp/sample.html: <!-- WiredMinds eMetrics tracking with Enterprise Edition V5.4 END -->
+    tmp/sample.html: </body>
+    tmp/sample.html: </html>
+    HEREDOC
+    expect(parseArgs(input)).to eq exp
+  end
 end
