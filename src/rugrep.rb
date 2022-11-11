@@ -216,6 +216,60 @@ def after_context(matched_indices, spacing, all_lines, script_ret, filename)
   script_ret
 end
 
+def context(matched_indices, spacing, all_lines, script_ret, filename)
+  length = matched_indices.length
+  l_length = all_lines.length
+  length.times do |i|
+    need_sep = false # For after context
+    curr = matched_indices[i]
+    prev = nil
+    _next = nil
+    if i == 0
+      final_b = curr - spacing < 0 ? 0 : curr - spacing
+      if i != length - 1
+        _next = matched_indices[1]
+      end
+    end
+    
+    if i > 0 and i < length - 1
+      prev = matched_indices[i - 1]
+      _next = matched_indices[i + 1]
+    end
+    
+    if i == length - 1
+      final_a = curr + spacing >= l_length ? l_length - 1 : curr + spacing
+      if i != 0
+        prev = matched_indices[i - 1]
+      end
+    end
+    
+    if prev
+      if curr - spacing <= prev + spacing + 1
+        # overlapped, no --
+        final_b = prev + 1
+      else
+        # no overlap, -- is added at after context
+        final_b = curr - spacing < 0 ? 0 : curr - spacing
+      end
+    end
+    
+    if _next
+      if curr + spacing >= _next - spacing - 1
+        # overlapped, no --
+        final_a = curr
+      else
+        # no overlapped, need --
+        need_sep = true
+        final_a = curr + spacing >= l_length ? l_length - 1 : curr + spacing
+      end
+    end
+    ret = all_lines[final_b..final_a].map {|line| filename == "" ? "#{ostrip(line)}\n" : "#{filename}: #{ostrip(line)}\n"}
+    script_ret += ret.join("")
+    script_ret += "--\n" if need_sep
+  end
+  script_ret
+end
+
 def ostrip(input)
   # My own strip function
   ret = input[-1] == "\n" ? input[...-1] : input
@@ -259,6 +313,7 @@ def do_matching(files, regexs, script_ret, optional_flag, spacing=0)
     script_ret += "#{File.basename(files[key])}\n" if optional_flag == "-L" and count == 0
     script_ret = after_context(matched_indices, spacing, IO.readlines(key), script_ret, "") if optional_flag == "-A_NUM"
     script_ret = before_context(matched_indices, spacing, IO.readlines(key), script_ret, "") if optional_flag == "-B_NUM"
+    script_ret = context(matched_indices, spacing, IO.readlines(key), script_ret, "") if optional_flag == "-C_NUM"
     files[key].close
   else
     files.each do |file, file_o|
@@ -293,6 +348,7 @@ def do_matching(files, regexs, script_ret, optional_flag, spacing=0)
       script_ret += "#{File.basename(file_o)}\n" if optional_flag == "-L" and count == 0
       script_ret = after_context(matched_indices, spacing, IO.readlines(file), script_ret, file) if optional_flag == "-A_NUM"
       script_ret = before_context(matched_indices, spacing, IO.readlines(file), script_ret, file) if optional_flag == "-B_NUM"
+      script_ret = context(matched_indices, spacing, IO.readlines(file), script_ret, file) if optional_flag == "-C_NUM"
       file_o.close
     end
   end
@@ -360,7 +416,7 @@ def parseArgs(args)
     elsif option_flags["-B_NUM"]
       script_ret = do_matching(opened_files, regexs, script_ret, "-B_NUM", option_flags["-B_NUM_P"])
     else
-      "-C_NUM"
+      script_ret = do_matching(opened_files, regexs, script_ret, "-C_NUM", option_flags["-C_NUM_P"])
     end
   elsif sum_flags(option_flags) == 0
     script_ret = do_matching(opened_files, regexs, script_ret, "")
