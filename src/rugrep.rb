@@ -167,105 +167,43 @@ def before_context(matched_indices, spacing, all_lines, script_ret, filename)
   # all_lines: all of the lines of the file
   # script_ret: the string to append messages to
   # filename: the file we are operating on
-  matched_indices.length.times do |i|
-    actual_index = matched_indices[i]
-    if i == 0
-      # 1st ele, no need to care overlap
-      final = actual_index - spacing < 0 ? 0 : actual_index - spacing
-    else
-      prev_index = matched_indices[i - 1]
-      # Overlapped, no need insert --
-      if actual_index - spacing <= prev_index + 1
-        final = prev_index + 1
-      else
-        # Didn't overlap insert --
-        script_ret += "--\n"
-        final = actual_index - spacing < 0 ? 0 : actual_index - spacing
-      end
-    end
-    ret = all_lines[final..actual_index].map {|line| filename == "" ? "#{ostrip(line)}\n" : "#{filename}: #{ostrip(line)}\n"}
+  m_length = matched_indices.length
+  m_length.times do |i|
+    curr = matched_indices[i]
+    final = curr - spacing < 0 ? 0 : curr - spacing
+    
+    ret = all_lines[final..curr].map {|line| filename == "" ? "#{ostrip(line)}\n" : "#{filename}: #{ostrip(line)}\n"}
     script_ret += ret.join("")
+    script_ret += "--\n" if i != m_length - 1
   end
   script_ret
 end
 
 def after_context(matched_indices, spacing, all_lines, script_ret, filename)
-  length = matched_indices.length
+  m_length = matched_indices.length
   l_length = all_lines.length
-  length.times do |i|
-    need_sep = false
-    actual_index = matched_indices[i]
-    if i == length - 1
-      # last ele, no overlap
-      final = actual_index + spacing >= l_length ? l_length - 1 : actual_index + spacing
-    else
-      next_index = matched_indices[i + 1]
-      if actual_index + spacing >= next_index - 1
-        # Overlapped, no need --
-        final = next_index - 1
-      else
-        # Insert -- not overlapped
-        final = actual_index + spacing >= l_length ? l_length - 1 : actual_index + spacing
-        need_sep = true
-      end
-    end
-    ret = all_lines[actual_index..final].map {|line| filename == "" ? "#{ostrip(line)}\n" : "#{filename}: #{ostrip(line)}\n"}
+  m_length.times do |i|
+    curr = matched_indices[i]
+    final = curr + spacing >= l_length ? l_length - 1 : curr + spacing
+    
+    ret = all_lines[curr..final].map {|line| filename == "" ? "#{ostrip(line)}\n" : "#{filename}: #{ostrip(line)}\n"}
     script_ret += ret.join("")
-    script_ret += "--\n" if need_sep
+    script_ret += "--\n" if i != m_length - 1
   end
   script_ret
 end
 
 def context(matched_indices, spacing, all_lines, script_ret, filename)
-  length = matched_indices.length
+  m_length = matched_indices.length
   l_length = all_lines.length
-  length.times do |i|
-    need_sep = false # For after context
+  m_length.times do |i|
     curr = matched_indices[i]
-    prev = nil
-    _next = nil
-    if i == 0
-      final_b = curr - spacing < 0 ? 0 : curr - spacing
-      if i != length - 1
-        _next = matched_indices[1]
-      end
-    end
+    final_b = curr - spacing < 0 ? 0 : curr - spacing
+    final_a = curr + spacing >= l_length ? l_length - 1 : curr + spacing
     
-    if i > 0 and i < length - 1
-      prev = matched_indices[i - 1]
-      _next = matched_indices[i + 1]
-    end
-    
-    if i == length - 1
-      final_a = curr + spacing >= l_length ? l_length - 1 : curr + spacing
-      if i != 0
-        prev = matched_indices[i - 1]
-      end
-    end
-    
-    if prev
-      if curr - spacing <= prev + spacing + 1
-        # overlapped, no --
-        final_b = prev + 1
-      else
-        # no overlap, -- is added at after context
-        final_b = curr - spacing < 0 ? 0 : curr - spacing
-      end
-    end
-    
-    if _next
-      if curr + spacing >= _next - spacing - 1
-        # overlapped, no --
-        final_a = curr
-      else
-        # no overlapped, need --
-        need_sep = true
-        final_a = curr + spacing >= l_length ? l_length - 1 : curr + spacing
-      end
-    end
     ret = all_lines[final_b..final_a].map {|line| filename == "" ? "#{ostrip(line)}\n" : "#{filename}: #{ostrip(line)}\n"}
     script_ret += ret.join("")
-    script_ret += "--\n" if need_sep
+    script_ret += "--\n" if i != m_length - 1
   end
   script_ret
 end
