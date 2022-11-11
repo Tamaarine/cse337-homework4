@@ -155,7 +155,7 @@ def open_files(files, script_ret)
       raise StandardError.new if File.directory?(file)
       ret[file] = File.open(file)
     rescue
-      script_ret += "Error: Could not read file #{file}\n"
+      script_ret += "Error: could not read file #{file}\n"
     end
   end
   return ret, script_ret
