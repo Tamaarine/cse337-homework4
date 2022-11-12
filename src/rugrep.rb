@@ -324,7 +324,7 @@ def parseArgs(args)
     elsif option_flags["-c"] and option_flags["-v"]
       "-c -v"
     elsif option_flags["-o"] and option_flags["-c"]
-      "-o -c"
+      script_ret = do_matching(opened_files, regexs, script_ret, "-c")
     elsif option_flags["-A_NUM"] and option_flags["-v"]
       "-A_NUM -v"
     elsif option_flags["-B_NUM"] and option_flags["-v"]
