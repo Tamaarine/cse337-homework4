@@ -401,7 +401,7 @@ describe "Func: open_files" do
     script_ret = ""
     ret, script_ret = open_files(files, script_ret)
     expect(ret).to eq Hash.new
-    expect(script_ret).to eq "Error: Could not read file haha\nError: Could not read file xd\nError: Could not read file not\nError: Could not read file valid\n"
+    expect(script_ret).to eq "Error: could not read file haha\nError: could not read file xd\nError: could not read file not\nError: could not read file valid\n"
   end
   
   it "Should return an mapping of two files and preserve previous script_ret value" do
@@ -413,7 +413,7 @@ describe "Func: open_files" do
       "tmp/example.html"
     ]
     expect(ret.keys).to eq exp
-    expect(script_ret).to eq "waError: Could not read file tmp/exists.txt\n"
+    expect(script_ret).to eq "waError: could not read file tmp/exists.txt\n"
   end
 end
 
@@ -430,7 +430,7 @@ describe "Func: parseArgs" do
   it "Should return the matching lines" do
     input = ["tmp/othello.txt", "hehe", "\"</?body>\"", "\"personal\"", "\"ship\""]
     exp = <<~HEREDOC
-    Error: Could not read file hehe
+    Error: could not read file hehe
     In personal suit to make me his lieutenant,
     Is all his soldiership. But he, sir, had the election:
     And I--God bless the mark!--his Moorship's ancient.
