@@ -1112,6 +1112,29 @@ describe "Func: parseArgs" do
     expect(parseArgs(input)).to eq "Error: could not read file tmp/te\n"
   end
   
+  it "Should return usage" do
+    input = ["tmp/te", "\"temp\"", "-v", "-o"]
+    expect(parseArgs(input)).to eq "USAGE: ruby rugrep.rb"
+  end
+  
+  it "Should return matching numbers" do
+    input = ["tmp/weird.txt", "tmp/sample.html", '"http[s]?://xd"',
+    '"License"', '"TXT"', '"c"', "-o", "-c"
+    ]
+    exp = <<~HEREDOC
+    tmp/weird.txt: 14
+    tmp/sample.html: 74
+    HEREDOC
+    expect(parseArgs(input)).to eq exp
+  end
+  
+  it "Should return matching numbers" do
+    input = ["tmp/weird.txt", '"http[s]?://xd"',
+    '"License"', '"TXT"', '"c"', "-o", "-c"
+    ]
+    expect(parseArgs(input)).to eq "14\n"
+  end
+  
   it "Should return the matching number of line counts" do
     input = ["tmp/othello_m.txt", "\"personal\"", "\"\\.\"",
       "\"text/css\"", "-c", "tmp/othello.txt", "tmp/sample.html"
