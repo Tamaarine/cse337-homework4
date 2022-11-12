@@ -311,9 +311,10 @@ def do_matching2(files, regexs, script_ret, optional_flag, spacing=0)
           matches = line.scan(reg)
           matches.each {|match| script_ret += "#{match}\n"}
         end
-      when "-Fv"
+      when "-Fv", "-Fvc"
         ret = regexs.all? {|reg| line.index(reg) == nil}
-        script_ret += "#{ostrip(line)}\n" if ret
+        script_ret += "#{ostrip(line)}\n" if ret and optional_flag == "-Fv"
+        count += 1 if ret
       when "-A_NUMv", "-B_NUMv", "-C_NUMv"
         ret = regexs.all? {|reg| line.index(reg) == nil} # push indices if none match
         matched_indices.push(i) if ret
@@ -321,6 +322,7 @@ def do_matching2(files, regexs, script_ret, optional_flag, spacing=0)
     end
     script_ret += "#{count}\n" if optional_flag == "-cv"
     script_ret += "#{count}\n" if optional_flag == "-Fc"
+    script_ret += "#{count}\n" if optional_flag == "-Fvc"
     script_ret = after_context(matched_indices, spacing, IO.readlines(key), script_ret, "") if optional_flag == "-A_NUMv"
     script_ret = before_context(matched_indices, spacing, IO.readlines(key), script_ret, "") if optional_flag == "-B_NUMv"
     script_ret = context(matched_indices, spacing, IO.readlines(key), script_ret, "") if optional_flag == "-C_NUMv"
@@ -341,9 +343,10 @@ def do_matching2(files, regexs, script_ret, optional_flag, spacing=0)
             matches = line.scan(reg)
             matches.each {|match| script_ret += "#{file}: #{match}\n"}
           end
-        when "-Fv"
+        when "-Fv", "-Fvc"
           ret = regexs.all? {|reg| line.index(reg) == nil}
-          script_ret += "#{file}: #{ostrip(line)}\n" if ret
+          script_ret += "#{file}: #{ostrip(line)}\n" if ret and optional_flag == "-Fv"
+          count += 1 if ret
         when "-A_NUMv", "-B_NUMv", "-C_NUMv"
           ret = regexs.all? {|reg| line.index(reg) == nil} # push indices if none match
           matched_indices.push(i) if ret
@@ -351,6 +354,7 @@ def do_matching2(files, regexs, script_ret, optional_flag, spacing=0)
       end
       script_ret += "#{file}: #{count}\n" if optional_flag == "-cv"
       script_ret += "#{file}: #{count}\n" if optional_flag == "-Fc"
+      script_ret += "#{file}: #{count}\n" if optional_flag == "-Fvc"
       script_ret = after_context(matched_indices, spacing, IO.readlines(file), script_ret, file) if optional_flag == "-A_NUMv"
       script_ret = before_context(matched_indices, spacing, IO.readlines(file), script_ret, file) if optional_flag == "-B_NUMv"
       script_ret = context(matched_indices, spacing, IO.readlines(file), script_ret, file) if optional_flag == "-C_NUMv"
@@ -376,7 +380,9 @@ def parseArgs(args)
   
   if sum_flags(option_flags) == 3
     if option_flags["-F"] and option_flags["-v"] and option_flags["-c"]
-      "-F -v -c"
+      regexs = args.filter {|arg| regex_format?(arg)}
+      regexs = regexs.map {|arg| arg[1...-1]}
+      script_ret = do_matching2(opened_files, regexs, script_ret, "-Fvc")
     else
       return $usage
     end
