@@ -1660,4 +1660,22 @@ describe "Func: parseArgs" do
     HEREDOC
     expect(parseArgs(input)).to eq exp
   end
+  
+  it "Should return matching string" do
+    input = ["tmp/weird.txt", '"http[s]?://xd"',
+    '"License"', '"TXT"', '"c"', "-F", "-v", "-c"
+    ]
+    expect(parseArgs(input)).to eq "8\n"
+  end
+  
+  it "Should return matching string" do
+    input = ["tmp/weird.txt", "tmp/sample.html", '"http[s]?://xd"',
+    '"License"', '"TXT"', '"c"', "-F", "-v", "-c"
+    ]
+    exp = <<~HEREDOC
+    tmp/weird.txt: 8
+    tmp/sample.html: 96
+    HEREDOC
+    expect(parseArgs(input)).to eq exp
+  end
 end
