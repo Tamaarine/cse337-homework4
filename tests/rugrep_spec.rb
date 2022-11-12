@@ -1177,7 +1177,7 @@ describe "Func: parseArgs" do
     expect(parseArgs(input)).to eq exp
   end
   
-  it "Should return the string" do
+  it "Should return the matching string" do
     input = ["tmp/weird.txt", "-o", "tmp/sample.html", '"http[s]?://"',
       '"http://"', '-F'
     ]
@@ -1190,7 +1190,7 @@ describe "Func: parseArgs" do
     expect(parseArgs(input)).to eq exp
   end
   
-  it "Should return the string" do
+  it "Should return the matching string" do
     input = ["tmp/weird.txt", "-o", '"http[s]?://xd"',
       '"http://xd"', '-F'
     ]
@@ -1216,7 +1216,7 @@ describe "Func: parseArgs" do
     expect(parseArgs(input)).to eq exp
   end
   
-  it "Should return the string" do
+  it "Should return the matching string" do
     input = ["tmp/weird.txt", "-v", '"http[s]?://xd"',
       '"License"', '"TXT"', '"c"', '-F'
     ]
@@ -1233,7 +1233,7 @@ describe "Func: parseArgs" do
     expect(parseArgs(input)).to eq exp
   end
   
-  it "Should return the string" do
+  it "Should return the matching string" do
     input = ["tmp/weird.txt", "-v", '"http[s]?://xd"',
       '"License"', '"TXT"', '"c"', '-F', "tmp/othello_m.txt"
     ]
@@ -1259,6 +1259,381 @@ describe "Func: parseArgs" do
     tmp/othello_m.txt: He, in good time, must his lieutenant be,
     tmp/othello_m.txt: --
     tmp/othello_m.txt: i love you!
+    HEREDOC
+    expect(parseArgs(input)).to eq exp
+  end
+  
+  it "Should return the matching string" do
+    input = ["tmp/weird.txt", "tmp/example.html", "-v", '"http[s]?://xd"',
+    '"License"', '"TXT"', '"c"', "-A_2"
+    ]
+    exp = <<~HEREDOC
+    tmp/weird.txt: Purpose: Provide example of this file type
+    tmp/weird.txt: Document file type: TXT
+    tmp/weird.txt: Version: 1.0
+    --
+    tmp/weird.txt: Version: 1.0
+    tmp/weird.txt: Remark:
+    tmp/weird.txt: 
+    --
+    tmp/weird.txt: Remark:
+    tmp/weird.txt: 
+    tmp/weird.txt: Example content:
+    --
+    tmp/weird.txt: 
+    tmp/weird.txt: Example content:
+    tmp/weird.txt: The names "John Doe" for males, "Jane Doe" or "Jane Roe" for females, or "Jonnie Doe" and "Janie Doe" for children, or just "Doe" non-gender-specifically are used as placeholder names for a party whose true identity is unknown or must be withheld in a legal action, case, or discussion. The names are also used to refer to acorpse or hospital patient whose identity is unknown. This practice is widely used in the United States and Canada, but is rarely used in other English-speaking countries including the United Kingdom itself, from where the use of "John Doe" in a legal context originates. The names Joe Bloggs or John Smith are used in the UK instead, as well as in Australia and New Zealand.
+    --
+    tmp/weird.txt: 
+    tmp/weird.txt: John Doe is sometimes used to refer to a typical male in other contexts as well, in a similar manner to John Q. Public, known in Great Britain as Joe Public, John Smith or Joe Bloggs. For example, the first name listed on a form is often John Doe, along with a fictional address or other fictional information to provide an example of how to fill in the form. The name is also used frequently in popular culture, for example in the Frank Capra film Meet John Doe. John Doe was also the name of a 2002 American television series.
+    tmp/weird.txt: 
+    --
+    tmp/weird.txt: 
+    tmp/weird.txt: Similarly, a child or baby whose identity is unknown may be referred to as Baby Doe. A notorious murder case in Kansas City, Missouri, referred to the baby victim as Precious Doe. Other unidentified female murder victims are Cali Doe and Princess Doe. Additional persons may be called James Doe, Judy Doe, etc. However, to avoid possible confusion, if two anonymous or unknown parties are cited in a specific case or action, the surnames Doe and Roe may be used simultaneously; for example, "John Doe v. Jane Roe". If several anonymous parties are referenced, they may simply be labelled John Doe #1, John Doe #2, etc. (the U.S. Operation Delego cited 21 (numbered) "John Doe"s) or labelled with other variants of Doe / Roe / Poe / etc. Other early alternatives such as John Stiles and Richard Miles are now rarely used, and Mary Major has been used in some American federal cases.
+    tmp/weird.txt: 
+    --
+    tmp/weird.txt: 
+    tmp/weird.txt: http[s]?://www.online-convert.com  hehe xd https[s]?
+    tmp/weird.txt: http://www.online-convert.com
+    --
+    tmp/weird.txt: 
+    tmp/weird.txt: Feel free to use and share the file according to the license above.
+    tmp/example.html: <!DOCTYPE html>
+    tmp/example.html: <html>
+    tmp/example.html: <body>
+    --
+    tmp/example.html: <html>
+    tmp/example.html: <body>
+    tmp/example.html: 
+    --
+    tmp/example.html: <body>
+    tmp/example.html: 
+    tmp/example.html: <p>This is a paragraph.</p>
+    --
+    tmp/example.html: 
+    tmp/example.html: <p>This is a paragraph.</p>
+    tmp/example.html: <p>This is another paragraph.</p>
+    --
+    tmp/example.html: <p>This is a paragraph.</p>
+    tmp/example.html: <p>This is another paragraph.</p>
+    tmp/example.html: 
+    --
+    tmp/example.html: <p>This is another paragraph.</p>
+    tmp/example.html: 
+    tmp/example.html: </body>
+    --
+    tmp/example.html: 
+    tmp/example.html: </body>
+    tmp/example.html: </html>
+    --
+    tmp/example.html: </body>
+    tmp/example.html: </html>
+    --
+    tmp/example.html: </html>
+    HEREDOC
+    expect(parseArgs(input)).to eq exp
+  end
+  
+  it "Should return the matching string" do
+    input = ["tmp/weird.txt", "-v", '"http[s]?://xd"',
+    '"License"', '"TXT"', '"c"', "-A_2"
+    ]
+    exp = <<~HEREDOC
+    Purpose: Provide example of this file type
+    Document file type: TXT
+    Version: 1.0
+    --
+    Version: 1.0
+    Remark:
+    
+    --
+    Remark:
+    
+    Example content:
+    --
+    
+    Example content:
+    The names "John Doe" for males, "Jane Doe" or "Jane Roe" for females, or "Jonnie Doe" and "Janie Doe" for children, or just "Doe" non-gender-specifically are used as placeholder names for a party whose true identity is unknown or must be withheld in a legal action, case, or discussion. The names are also used to refer to acorpse or hospital patient whose identity is unknown. This practice is widely used in the United States and Canada, but is rarely used in other English-speaking countries including the United Kingdom itself, from where the use of "John Doe" in a legal context originates. The names Joe Bloggs or John Smith are used in the UK instead, as well as in Australia and New Zealand.
+    --
+    
+    John Doe is sometimes used to refer to a typical male in other contexts as well, in a similar manner to John Q. Public, known in Great Britain as Joe Public, John Smith or Joe Bloggs. For example, the first name listed on a form is often John Doe, along with a fictional address or other fictional information to provide an example of how to fill in the form. The name is also used frequently in popular culture, for example in the Frank Capra film Meet John Doe. John Doe was also the name of a 2002 American television series.
+    
+    --
+    
+    Similarly, a child or baby whose identity is unknown may be referred to as Baby Doe. A notorious murder case in Kansas City, Missouri, referred to the baby victim as Precious Doe. Other unidentified female murder victims are Cali Doe and Princess Doe. Additional persons may be called James Doe, Judy Doe, etc. However, to avoid possible confusion, if two anonymous or unknown parties are cited in a specific case or action, the surnames Doe and Roe may be used simultaneously; for example, "John Doe v. Jane Roe". If several anonymous parties are referenced, they may simply be labelled John Doe #1, John Doe #2, etc. (the U.S. Operation Delego cited 21 (numbered) "John Doe"s) or labelled with other variants of Doe / Roe / Poe / etc. Other early alternatives such as John Stiles and Richard Miles are now rarely used, and Mary Major has been used in some American federal cases.
+    
+    --
+    
+    http[s]?://www.online-convert.com  hehe xd https[s]?
+    http://www.online-convert.com
+    --
+    
+    Feel free to use and share the file according to the license above.
+    HEREDOC
+    expect(parseArgs(input)).to eq exp
+  end
+  
+  it "Should return the matching string" do
+    input = ["tmp/weird.txt", "tmp/example.html", "-v", '"http[s]?://xd"',
+    '"License"', '"TXT"', '"c"', "-B_2"
+    ]
+    exp = <<~HEREDOC
+    tmp/weird.txt: TXT test file
+    tmp/weird.txt: Purpose: Provide example of this file type
+    --
+    tmp/weird.txt: Purpose: Provide example of this file type
+    tmp/weird.txt: Document file type: TXT
+    tmp/weird.txt: Version: 1.0
+    --
+    tmp/weird.txt: Document file type: TXT
+    tmp/weird.txt: Version: 1.0
+    tmp/weird.txt: Remark:
+    --
+    tmp/weird.txt: Version: 1.0
+    tmp/weird.txt: Remark:
+    tmp/weird.txt: 
+    --
+    tmp/weird.txt: Example content:
+    tmp/weird.txt: The names "John Doe" for males, "Jane Doe" or "Jane Roe" for females, or "Jonnie Doe" and "Janie Doe" for children, or just "Doe" non-gender-specifically are used as placeholder names for a party whose true identity is unknown or must be withheld in a legal action, case, or discussion. The names are also used to refer to acorpse or hospital patient whose identity is unknown. This practice is widely used in the United States and Canada, but is rarely used in other English-speaking countries including the United Kingdom itself, from where the use of "John Doe" in a legal context originates. The names Joe Bloggs or John Smith are used in the UK instead, as well as in Australia and New Zealand.
+    tmp/weird.txt: 
+    --
+    tmp/weird.txt: 
+    tmp/weird.txt: John Doe is sometimes used to refer to a typical male in other contexts as well, in a similar manner to John Q. Public, known in Great Britain as Joe Public, John Smith or Joe Bloggs. For example, the first name listed on a form is often John Doe, along with a fictional address or other fictional information to provide an example of how to fill in the form. The name is also used frequently in popular culture, for example in the Frank Capra film Meet John Doe. John Doe was also the name of a 2002 American television series.
+    tmp/weird.txt: 
+    --
+    tmp/weird.txt: 
+    tmp/weird.txt: Similarly, a child or baby whose identity is unknown may be referred to as Baby Doe. A notorious murder case in Kansas City, Missouri, referred to the baby victim as Precious Doe. Other unidentified female murder victims are Cali Doe and Princess Doe. Additional persons may be called James Doe, Judy Doe, etc. However, to avoid possible confusion, if two anonymous or unknown parties are cited in a specific case or action, the surnames Doe and Roe may be used simultaneously; for example, "John Doe v. Jane Roe". If several anonymous parties are referenced, they may simply be labelled John Doe #1, John Doe #2, etc. (the U.S. Operation Delego cited 21 (numbered) "John Doe"s) or labelled with other variants of Doe / Roe / Poe / etc. Other early alternatives such as John Stiles and Richard Miles are now rarely used, and Mary Major has been used in some American federal cases.
+    tmp/weird.txt: 
+    --
+    tmp/weird.txt: Text of Example content: Wikipedia (https://en.wikipedia.org/wiki/John_Doe)
+    tmp/weird.txt: License: Attribution-ShareAlike 4.0 (https://creativecommons.org/licenses/by-sa/4.0/)
+    tmp/weird.txt: 
+    tmp/example.html: <!DOCTYPE html>
+    --
+    tmp/example.html: <!DOCTYPE html>
+    tmp/example.html: <html>
+    --
+    tmp/example.html: <!DOCTYPE html>
+    tmp/example.html: <html>
+    tmp/example.html: <body>
+    --
+    tmp/example.html: <html>
+    tmp/example.html: <body>
+    tmp/example.html: 
+    --
+    tmp/example.html: <body>
+    tmp/example.html: 
+    tmp/example.html: <p>This is a paragraph.</p>
+    --
+    tmp/example.html: 
+    tmp/example.html: <p>This is a paragraph.</p>
+    tmp/example.html: <p>This is another paragraph.</p>
+    --
+    tmp/example.html: <p>This is a paragraph.</p>
+    tmp/example.html: <p>This is another paragraph.</p>
+    tmp/example.html: 
+    --
+    tmp/example.html: <p>This is another paragraph.</p>
+    tmp/example.html: 
+    tmp/example.html: </body>
+    --
+    tmp/example.html: 
+    tmp/example.html: </body>
+    tmp/example.html: </html>
+    HEREDOC
+    expect(parseArgs(input)).to eq exp
+  end
+  
+  it "Should return the matching string" do
+    input = ["tmp/weird.txt", "-v", '"http[s]?://xd"',
+    '"License"', '"TXT"', '"c"', "-B_2"
+    ]
+    exp = <<~HEREDOC
+    TXT test file
+    Purpose: Provide example of this file type
+    --
+    Purpose: Provide example of this file type
+    Document file type: TXT
+    Version: 1.0
+    --
+    Document file type: TXT
+    Version: 1.0
+    Remark:
+    --
+    Version: 1.0
+    Remark:
+    
+    --
+    Example content:
+    The names "John Doe" for males, "Jane Doe" or "Jane Roe" for females, or "Jonnie Doe" and "Janie Doe" for children, or just "Doe" non-gender-specifically are used as placeholder names for a party whose true identity is unknown or must be withheld in a legal action, case, or discussion. The names are also used to refer to acorpse or hospital patient whose identity is unknown. This practice is widely used in the United States and Canada, but is rarely used in other English-speaking countries including the United Kingdom itself, from where the use of "John Doe" in a legal context originates. The names Joe Bloggs or John Smith are used in the UK instead, as well as in Australia and New Zealand.
+    
+    --
+    
+    John Doe is sometimes used to refer to a typical male in other contexts as well, in a similar manner to John Q. Public, known in Great Britain as Joe Public, John Smith or Joe Bloggs. For example, the first name listed on a form is often John Doe, along with a fictional address or other fictional information to provide an example of how to fill in the form. The name is also used frequently in popular culture, for example in the Frank Capra film Meet John Doe. John Doe was also the name of a 2002 American television series.
+    
+    --
+    
+    Similarly, a child or baby whose identity is unknown may be referred to as Baby Doe. A notorious murder case in Kansas City, Missouri, referred to the baby victim as Precious Doe. Other unidentified female murder victims are Cali Doe and Princess Doe. Additional persons may be called James Doe, Judy Doe, etc. However, to avoid possible confusion, if two anonymous or unknown parties are cited in a specific case or action, the surnames Doe and Roe may be used simultaneously; for example, "John Doe v. Jane Roe". If several anonymous parties are referenced, they may simply be labelled John Doe #1, John Doe #2, etc. (the U.S. Operation Delego cited 21 (numbered) "John Doe"s) or labelled with other variants of Doe / Roe / Poe / etc. Other early alternatives such as John Stiles and Richard Miles are now rarely used, and Mary Major has been used in some American federal cases.
+    
+    --
+    Text of Example content: Wikipedia (https://en.wikipedia.org/wiki/John_Doe)
+    License: Attribution-ShareAlike 4.0 (https://creativecommons.org/licenses/by-sa/4.0/)
+    
+    HEREDOC
+    expect(parseArgs(input)).to eq exp
+  end
+  
+  it "Should return the matching string" do
+    input = ["tmp/weird.txt", "tmp/example.html","-v", '"http[s]?://xd"',
+    '"License"', '"TXT"', '"c"', "-C_2"
+    ]
+    exp = <<~HEREDOC
+    tmp/weird.txt: TXT test file
+    tmp/weird.txt: Purpose: Provide example of this file type
+    tmp/weird.txt: Document file type: TXT
+    tmp/weird.txt: Version: 1.0
+    --
+    tmp/weird.txt: Purpose: Provide example of this file type
+    tmp/weird.txt: Document file type: TXT
+    tmp/weird.txt: Version: 1.0
+    tmp/weird.txt: Remark:
+    tmp/weird.txt: 
+    --
+    tmp/weird.txt: Document file type: TXT
+    tmp/weird.txt: Version: 1.0
+    tmp/weird.txt: Remark:
+    tmp/weird.txt: 
+    tmp/weird.txt: Example content:
+    --
+    tmp/weird.txt: Version: 1.0
+    tmp/weird.txt: Remark:
+    tmp/weird.txt: 
+    tmp/weird.txt: Example content:
+    tmp/weird.txt: The names "John Doe" for males, "Jane Doe" or "Jane Roe" for females, or "Jonnie Doe" and "Janie Doe" for children, or just "Doe" non-gender-specifically are used as placeholder names for a party whose true identity is unknown or must be withheld in a legal action, case, or discussion. The names are also used to refer to acorpse or hospital patient whose identity is unknown. This practice is widely used in the United States and Canada, but is rarely used in other English-speaking countries including the United Kingdom itself, from where the use of "John Doe" in a legal context originates. The names Joe Bloggs or John Smith are used in the UK instead, as well as in Australia and New Zealand.
+    --
+    tmp/weird.txt: Example content:
+    tmp/weird.txt: The names "John Doe" for males, "Jane Doe" or "Jane Roe" for females, or "Jonnie Doe" and "Janie Doe" for children, or just "Doe" non-gender-specifically are used as placeholder names for a party whose true identity is unknown or must be withheld in a legal action, case, or discussion. The names are also used to refer to acorpse or hospital patient whose identity is unknown. This practice is widely used in the United States and Canada, but is rarely used in other English-speaking countries including the United Kingdom itself, from where the use of "John Doe" in a legal context originates. The names Joe Bloggs or John Smith are used in the UK instead, as well as in Australia and New Zealand.
+    tmp/weird.txt: 
+    tmp/weird.txt: John Doe is sometimes used to refer to a typical male in other contexts as well, in a similar manner to John Q. Public, known in Great Britain as Joe Public, John Smith or Joe Bloggs. For example, the first name listed on a form is often John Doe, along with a fictional address or other fictional information to provide an example of how to fill in the form. The name is also used frequently in popular culture, for example in the Frank Capra film Meet John Doe. John Doe was also the name of a 2002 American television series.
+    tmp/weird.txt: 
+    --
+    tmp/weird.txt: 
+    tmp/weird.txt: John Doe is sometimes used to refer to a typical male in other contexts as well, in a similar manner to John Q. Public, known in Great Britain as Joe Public, John Smith or Joe Bloggs. For example, the first name listed on a form is often John Doe, along with a fictional address or other fictional information to provide an example of how to fill in the form. The name is also used frequently in popular culture, for example in the Frank Capra film Meet John Doe. John Doe was also the name of a 2002 American television series.
+    tmp/weird.txt: 
+    tmp/weird.txt: Similarly, a child or baby whose identity is unknown may be referred to as Baby Doe. A notorious murder case in Kansas City, Missouri, referred to the baby victim as Precious Doe. Other unidentified female murder victims are Cali Doe and Princess Doe. Additional persons may be called James Doe, Judy Doe, etc. However, to avoid possible confusion, if two anonymous or unknown parties are cited in a specific case or action, the surnames Doe and Roe may be used simultaneously; for example, "John Doe v. Jane Roe". If several anonymous parties are referenced, they may simply be labelled John Doe #1, John Doe #2, etc. (the U.S. Operation Delego cited 21 (numbered) "John Doe"s) or labelled with other variants of Doe / Roe / Poe / etc. Other early alternatives such as John Stiles and Richard Miles are now rarely used, and Mary Major has been used in some American federal cases.
+    tmp/weird.txt: 
+    --
+    tmp/weird.txt: 
+    tmp/weird.txt: Similarly, a child or baby whose identity is unknown may be referred to as Baby Doe. A notorious murder case in Kansas City, Missouri, referred to the baby victim as Precious Doe. Other unidentified female murder victims are Cali Doe and Princess Doe. Additional persons may be called James Doe, Judy Doe, etc. However, to avoid possible confusion, if two anonymous or unknown parties are cited in a specific case or action, the surnames Doe and Roe may be used simultaneously; for example, "John Doe v. Jane Roe". If several anonymous parties are referenced, they may simply be labelled John Doe #1, John Doe #2, etc. (the U.S. Operation Delego cited 21 (numbered) "John Doe"s) or labelled with other variants of Doe / Roe / Poe / etc. Other early alternatives such as John Stiles and Richard Miles are now rarely used, and Mary Major has been used in some American federal cases.
+    tmp/weird.txt: 
+    tmp/weird.txt: http[s]?://www.online-convert.com  hehe xd https[s]?
+    tmp/weird.txt: http://www.online-convert.com
+    --
+    tmp/weird.txt: Text of Example content: Wikipedia (https://en.wikipedia.org/wiki/John_Doe)
+    tmp/weird.txt: License: Attribution-ShareAlike 4.0 (https://creativecommons.org/licenses/by-sa/4.0/)
+    tmp/weird.txt: 
+    tmp/weird.txt: Feel free to use and share the file according to the license above.
+    tmp/example.html: <!DOCTYPE html>
+    tmp/example.html: <html>
+    tmp/example.html: <body>
+    --
+    tmp/example.html: <!DOCTYPE html>
+    tmp/example.html: <html>
+    tmp/example.html: <body>
+    tmp/example.html: 
+    --
+    tmp/example.html: <!DOCTYPE html>
+    tmp/example.html: <html>
+    tmp/example.html: <body>
+    tmp/example.html: 
+    tmp/example.html: <p>This is a paragraph.</p>
+    --
+    tmp/example.html: <html>
+    tmp/example.html: <body>
+    tmp/example.html: 
+    tmp/example.html: <p>This is a paragraph.</p>
+    tmp/example.html: <p>This is another paragraph.</p>
+    --
+    tmp/example.html: <body>
+    tmp/example.html: 
+    tmp/example.html: <p>This is a paragraph.</p>
+    tmp/example.html: <p>This is another paragraph.</p>
+    tmp/example.html: 
+    --
+    tmp/example.html: 
+    tmp/example.html: <p>This is a paragraph.</p>
+    tmp/example.html: <p>This is another paragraph.</p>
+    tmp/example.html: 
+    tmp/example.html: </body>
+    --
+    tmp/example.html: <p>This is a paragraph.</p>
+    tmp/example.html: <p>This is another paragraph.</p>
+    tmp/example.html: 
+    tmp/example.html: </body>
+    tmp/example.html: </html>
+    --
+    tmp/example.html: <p>This is another paragraph.</p>
+    tmp/example.html: 
+    tmp/example.html: </body>
+    tmp/example.html: </html>
+    --
+    tmp/example.html: 
+    tmp/example.html: </body>
+    tmp/example.html: </html>
+    HEREDOC
+    expect(parseArgs(input)).to eq exp
+  end
+  
+  it "Should return the matching string" do
+    input = ["tmp/weird.txt", "-v", '"http[s]?://xd"',
+    '"License"', '"TXT"', '"c"', "-C_2"
+    ]
+    exp = <<~HEREDOC
+    TXT test file
+    Purpose: Provide example of this file type
+    Document file type: TXT
+    Version: 1.0
+    --
+    Purpose: Provide example of this file type
+    Document file type: TXT
+    Version: 1.0
+    Remark:
+    
+    --
+    Document file type: TXT
+    Version: 1.0
+    Remark:
+    
+    Example content:
+    --
+    Version: 1.0
+    Remark:
+    
+    Example content:
+    The names "John Doe" for males, "Jane Doe" or "Jane Roe" for females, or "Jonnie Doe" and "Janie Doe" for children, or just "Doe" non-gender-specifically are used as placeholder names for a party whose true identity is unknown or must be withheld in a legal action, case, or discussion. The names are also used to refer to acorpse or hospital patient whose identity is unknown. This practice is widely used in the United States and Canada, but is rarely used in other English-speaking countries including the United Kingdom itself, from where the use of "John Doe" in a legal context originates. The names Joe Bloggs or John Smith are used in the UK instead, as well as in Australia and New Zealand.
+    --
+    Example content:
+    The names "John Doe" for males, "Jane Doe" or "Jane Roe" for females, or "Jonnie Doe" and "Janie Doe" for children, or just "Doe" non-gender-specifically are used as placeholder names for a party whose true identity is unknown or must be withheld in a legal action, case, or discussion. The names are also used to refer to acorpse or hospital patient whose identity is unknown. This practice is widely used in the United States and Canada, but is rarely used in other English-speaking countries including the United Kingdom itself, from where the use of "John Doe" in a legal context originates. The names Joe Bloggs or John Smith are used in the UK instead, as well as in Australia and New Zealand.
+    
+    John Doe is sometimes used to refer to a typical male in other contexts as well, in a similar manner to John Q. Public, known in Great Britain as Joe Public, John Smith or Joe Bloggs. For example, the first name listed on a form is often John Doe, along with a fictional address or other fictional information to provide an example of how to fill in the form. The name is also used frequently in popular culture, for example in the Frank Capra film Meet John Doe. John Doe was also the name of a 2002 American television series.
+    
+    --
+    
+    John Doe is sometimes used to refer to a typical male in other contexts as well, in a similar manner to John Q. Public, known in Great Britain as Joe Public, John Smith or Joe Bloggs. For example, the first name listed on a form is often John Doe, along with a fictional address or other fictional information to provide an example of how to fill in the form. The name is also used frequently in popular culture, for example in the Frank Capra film Meet John Doe. John Doe was also the name of a 2002 American television series.
+    
+    Similarly, a child or baby whose identity is unknown may be referred to as Baby Doe. A notorious murder case in Kansas City, Missouri, referred to the baby victim as Precious Doe. Other unidentified female murder victims are Cali Doe and Princess Doe. Additional persons may be called James Doe, Judy Doe, etc. However, to avoid possible confusion, if two anonymous or unknown parties are cited in a specific case or action, the surnames Doe and Roe may be used simultaneously; for example, "John Doe v. Jane Roe". If several anonymous parties are referenced, they may simply be labelled John Doe #1, John Doe #2, etc. (the U.S. Operation Delego cited 21 (numbered) "John Doe"s) or labelled with other variants of Doe / Roe / Poe / etc. Other early alternatives such as John Stiles and Richard Miles are now rarely used, and Mary Major has been used in some American federal cases.
+    
+    --
+    
+    Similarly, a child or baby whose identity is unknown may be referred to as Baby Doe. A notorious murder case in Kansas City, Missouri, referred to the baby victim as Precious Doe. Other unidentified female murder victims are Cali Doe and Princess Doe. Additional persons may be called James Doe, Judy Doe, etc. However, to avoid possible confusion, if two anonymous or unknown parties are cited in a specific case or action, the surnames Doe and Roe may be used simultaneously; for example, "John Doe v. Jane Roe". If several anonymous parties are referenced, they may simply be labelled John Doe #1, John Doe #2, etc. (the U.S. Operation Delego cited 21 (numbered) "John Doe"s) or labelled with other variants of Doe / Roe / Poe / etc. Other early alternatives such as John Stiles and Richard Miles are now rarely used, and Mary Major has been used in some American federal cases.
+    
+    http[s]?://www.online-convert.com  hehe xd https[s]?
+    http://www.online-convert.com
+    --
+    Text of Example content: Wikipedia (https://en.wikipedia.org/wiki/John_Doe)
+    License: Attribution-ShareAlike 4.0 (https://creativecommons.org/licenses/by-sa/4.0/)
+    
+    Feel free to use and share the file according to the license above.
     HEREDOC
     expect(parseArgs(input)).to eq exp
   end
