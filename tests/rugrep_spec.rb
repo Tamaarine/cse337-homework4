@@ -1094,27 +1094,27 @@ describe "Func: parseArgs" do
   
   it "Should return usage" do
     input = ["-v", "-d"]
-    expect(parseArgs(input)).to eq "USAGE: ruby rugrep.rb"
+    expect(parseArgs(input)).to eq $usage
   end
   
   it "Should return usage" do
     input = ["tmp/othello.txt", "-F", "-c", "-o", "\"temp\""]
-    expect(parseArgs(input)).to eq "USAGE: ruby rugrep.rb"
+    expect(parseArgs(input)).to eq $usage
   end
   
   it "Should return usage" do
     input = ["-F", "-c", "-o", "-v", "tmp/othello.txt", "\"temp\""]
-    expect(parseArgs(input)).to eq "USAGE: ruby rugrep.rb"
+    expect(parseArgs(input)).to eq $usage
   end
   
-  it "Should return usage" do
+  it "Should return complain about not being able to read file" do
     input = ["tmp/te", "\"temp\""]
     expect(parseArgs(input)).to eq "Error: could not read file tmp/te\n"
   end
   
   it "Should return usage" do
     input = ["tmp/te", "\"temp\"", "-v", "-o"]
-    expect(parseArgs(input)).to eq "USAGE: ruby rugrep.rb"
+    expect(parseArgs(input)).to eq $usage
   end
   
   it "Should return matching numbers" do
