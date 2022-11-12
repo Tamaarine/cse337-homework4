@@ -1198,4 +1198,68 @@ describe "Func: parseArgs" do
     HEREDOC
     expect(parseArgs(input)).to eq exp
   end
+  
+  it "Should return the string" do
+    input = ["tmp/weird.txt", "-v", '"http[s]?://xd"',
+      '"License"', '"TXT"', '"c"', '-F'
+    ]
+    exp = <<~HEREDOC
+    Purpose: Provide example of this file type
+    Version: 1.0
+    Remark:
+    
+    
+    
+    
+    
+    HEREDOC
+    expect(parseArgs(input)).to eq exp
+  end
+  
+  it "Should return the string" do
+    input = ["tmp/weird.txt", "-v", '"http[s]?://xd"',
+      '"License"', '"TXT"', '"c"', '-F'
+    ]
+    exp = <<~HEREDOC
+    Purpose: Provide example of this file type
+    Version: 1.0
+    Remark:
+    
+    
+    
+    
+    
+    HEREDOC
+    expect(parseArgs(input)).to eq exp
+  end
+  
+  it "Should return the string" do
+    input = ["tmp/weird.txt", "-v", '"http[s]?://xd"',
+      '"License"', '"TXT"', '"c"', '-F', "tmp/othello_m.txt"
+    ]
+    exp = <<~HEREDOC
+    tmp/weird.txt: Purpose: Provide example of this file type
+    tmp/weird.txt: Version: 1.0
+    tmp/weird.txt: Remark:
+    tmp/weird.txt: 
+    tmp/weird.txt: 
+    tmp/weird.txt: 
+    tmp/weird.txt: 
+    tmp/weird.txt: 
+    tmp/othello_m.txt: In personal suit to make me his lieutenant,
+    tmp/othello_m.txt: But he; as loving his own pride and purposes,
+    tmp/othello_m.txt: Horribly stuff'd with epithets of war;
+    tmp/othello_m.txt: Nonsuits my mediators; for, 'Certes,' says he,
+    tmp/othello_m.txt: And what was he?
+    tmp/othello_m.txt: A fellow almost damn'd in a fair wife;
+    tmp/othello_m.txt: That never set a squadron in the field,
+    tmp/othello_m.txt: Nor the division of a battle knows
+    tmp/othello_m.txt: And I, of whom his eyes had seen the proof
+    tmp/othello_m.txt: At Rhodes, at Cyprus and on other grounds
+    tmp/othello_m.txt: He, in good time, must his lieutenant be,
+    tmp/othello_m.txt: --
+    tmp/othello_m.txt: i love you!
+    HEREDOC
+    expect(parseArgs(input)).to eq exp
+  end
 end
