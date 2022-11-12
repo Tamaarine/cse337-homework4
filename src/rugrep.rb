@@ -310,6 +310,9 @@ def do_matching2(files, regexs, script_ret, optional_flag, spacing=0)
           matches = line.scan(reg)
           matches.each {|match| script_ret += "#{match}\n"}
         end
+      when "-Fv"
+        ret = regexs.all? {|reg| line.index(reg) == nil}
+        script_ret += "#{ostrip(line)}\n" if ret
       end
     end
     script_ret += "#{count}\n" if optional_flag == "-cv"
@@ -331,6 +334,9 @@ def do_matching2(files, regexs, script_ret, optional_flag, spacing=0)
             matches = line.scan(reg)
             matches.each {|match| script_ret += "#{file}: #{match}\n"}
           end
+        when "-Fv"
+          ret = regexs.all? {|reg| line.index(reg) == nil}
+          script_ret += "#{file}: #{ostrip(line)}\n" if ret
         end
       end
       script_ret += "#{file}: #{count}\n" if optional_flag == "-cv"
@@ -363,7 +369,9 @@ def parseArgs(args)
     end
   elsif sum_flags(option_flags) == 2
     if option_flags["-F"] and option_flags["-v"]
-      "-F -v"
+      regexs = args.filter {|arg| regex_format?(arg)}
+      regexs = regexs.map {|arg| arg[1...-1]}
+      script_ret = do_matching2(opened_files, regexs, script_ret, "-Fv")
     elsif option_flags["-F"] and option_flags["-o"]
       regexs = args.filter {|arg| regex_format?(arg)}
       regexs = regexs.map {|arg| arg[1...-1]}
