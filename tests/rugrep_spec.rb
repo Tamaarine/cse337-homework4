@@ -1096,4 +1096,42 @@ describe "Func: parseArgs" do
     input = ["-v", "-d"]
     expect(parseArgs(input)).to eq "USAGE: ruby rugrep.rb"
   end
+  
+  it "Should return usage" do
+    input = ["tmp/othello.txt", "-F", "-c", "-o", "\"temp\""]
+    expect(parseArgs(input)).to eq "USAGE: ruby rugrep.rb"
+  end
+  
+  it "Should return usage" do
+    input = ["-F", "-c", "-o", "-v", "tmp/othello.txt", "\"temp\""]
+    expect(parseArgs(input)).to eq "USAGE: ruby rugrep.rb"
+  end
+  
+  it "Should return usage" do
+    input = ["tmp/te", "\"temp\""]
+    expect(parseArgs(input)).to eq "Error: could not read file tmp/te\n"
+  end
+  
+  it "Should return the matching number of line counts" do
+    input = ["tmp/othello_m.txt", "\"personal\"", "\"\\.\"",
+      "\"text/css\"", "-c", "tmp/othello.txt", "tmp/sample.html"
+    ]
+    exp = <<~HEREDOC
+    tmp/othello_m.txt: 5
+    tmp/othello.txt: 5
+    tmp/sample.html: 48
+    HEREDOC
+    expect(parseArgs(input)).to eq exp
+  end
+  
+  it "Should return the matching number of line counts" do
+    input = ["tmp/othello_m.txt", "\"personal\"", "\"\\.\"",
+      "\"text/css\"", "-c", "tmp/ohno.txt"
+    ]
+    exp = <<~HEREDOC
+    Error: could not read file tmp/ohno.txt
+    5
+    HEREDOC
+    expect(parseArgs(input)).to eq exp
+  end
 end
