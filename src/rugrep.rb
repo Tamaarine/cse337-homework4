@@ -294,6 +294,7 @@ def do_matching(files, regexs, script_ret, optional_flag, spacing=0)
 end
 
 def do_matching2(files, regexs, script_ret, optional_flag, spacing=0)
+  matched_indices = []
   if files.length == 1
     key = files.keys[0]
     count = 0
@@ -313,10 +314,16 @@ def do_matching2(files, regexs, script_ret, optional_flag, spacing=0)
       when "-Fv"
         ret = regexs.all? {|reg| line.index(reg) == nil}
         script_ret += "#{ostrip(line)}\n" if ret
+      when "-A_NUMv", "-B_NUMv", "-C_NUMv"
+        ret = regexs.all? {|reg| line.index(reg) == nil} # push indices if none match
+        matched_indices.push(i) if ret
       end
     end
     script_ret += "#{count}\n" if optional_flag == "-cv"
     script_ret += "#{count}\n" if optional_flag == "-Fc"
+    script_ret = after_context(matched_indices, spacing, IO.readlines(key), script_ret, "") if optional_flag == "-A_NUMv"
+    script_ret = before_context(matched_indices, spacing, IO.readlines(key), script_ret, "") if optional_flag == "-B_NUMv"
+    script_ret = context(matched_indices, spacing, IO.readlines(key), script_ret, "") if optional_flag == "-C_NUMv"
   else
     files.each do |file, file_o|
       count = 0
@@ -337,10 +344,16 @@ def do_matching2(files, regexs, script_ret, optional_flag, spacing=0)
         when "-Fv"
           ret = regexs.all? {|reg| line.index(reg) == nil}
           script_ret += "#{file}: #{ostrip(line)}\n" if ret
+        when "-A_NUMv", "-B_NUMv", "-C_NUMv"
+          ret = regexs.all? {|reg| line.index(reg) == nil} # push indices if none match
+          matched_indices.push(i) if ret
         end
       end
       script_ret += "#{file}: #{count}\n" if optional_flag == "-cv"
       script_ret += "#{file}: #{count}\n" if optional_flag == "-Fc"
+      script_ret = after_context(matched_indices, spacing, IO.readlines(file), script_ret, file) if optional_flag == "-A_NUMv"
+      script_ret = before_context(matched_indices, spacing, IO.readlines(file), script_ret, file) if optional_flag == "-B_NUMv"
+      script_ret = context(matched_indices, spacing, IO.readlines(file), script_ret, file) if optional_flag == "-C_NUMv"
     end
   end
   script_ret
@@ -383,11 +396,11 @@ def parseArgs(args)
     elsif option_flags["-o"] and option_flags["-c"]
       script_ret = do_matching(opened_files, regexs, script_ret, "-c")
     elsif option_flags["-A_NUM"] and option_flags["-v"]
-      "-A_NUM -v"
+      script_ret = do_matching2(opened_files, regexs, script_ret, "-A_NUMv", option_flags["-A_NUM_P"])
     elsif option_flags["-B_NUM"] and option_flags["-v"]
-      "-B_NUM -v"
+      script_ret = do_matching2(opened_files, regexs, script_ret, "-B_NUMv", option_flags["-B_NUM_P"])
     elsif option_flags["-C_NUM"] and option_flags["-v"]
-      "-C_NUM -v"
+      script_ret = do_matching2(opened_files, regexs, script_ret, "-C_NUMv", option_flags["-C_NUM_P"])
     else
       return $usage
     end
