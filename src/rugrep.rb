@@ -368,17 +368,15 @@ def parseArgs(args)
       return $usage
     end
   elsif sum_flags(option_flags) == 2
-    if option_flags["-F"] and option_flags["-v"]
+    if option_flags["-F"] # For fix string interpretation
       regexs = args.filter {|arg| regex_format?(arg)}
       regexs = regexs.map {|arg| arg[1...-1]}
+    end
+    if option_flags["-F"] and option_flags["-v"]
       script_ret = do_matching2(opened_files, regexs, script_ret, "-Fv")
     elsif option_flags["-F"] and option_flags["-o"]
-      regexs = args.filter {|arg| regex_format?(arg)}
-      regexs = regexs.map {|arg| arg[1...-1]}
       script_ret = do_matching2(opened_files, regexs, script_ret, "-Fo")
     elsif option_flags["-F"] and option_flags["-c"]
-      regexs = args.filter {|arg| regex_format?(arg)}
-      regexs = regexs.map {|arg| arg[1...-1]}
       script_ret = do_matching2(opened_files, regexs, script_ret, "-Fc")
     elsif option_flags["-c"] and option_flags["-v"]
       script_ret = do_matching2(opened_files, regexs, script_ret, "-cv")
