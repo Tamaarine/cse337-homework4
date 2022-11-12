@@ -1160,19 +1160,41 @@ describe "Func: parseArgs" do
   end
   
   it "Should return the matching number of line counts" do
-    input = ["tmp/weird.txt", '"http[s]?://"', 
+    input = ["tmp/weird.txt", '"http[s]?://"',
       '"child"', '-F', '-c'
     ]
     expect(parseArgs(input)).to eq "3\n"
   end
   
   it "Should return the matching number of line counts" do
-    input = ["tmp/weird.txt", "tmp/sample.html", '"http[s]?://"', 
+    input = ["tmp/weird.txt", "tmp/sample.html", '"http[s]?://"',
       '"http://"', '-F', '-c'
     ]
     exp = <<~HEREDOC
     tmp/weird.txt: 3
     tmp/sample.html: 1
+    HEREDOC
+    expect(parseArgs(input)).to eq exp
+  end
+  
+  it "Should return the string" do
+    input = ["tmp/weird.txt", "-o", "tmp/sample.html", '"http[s]?://"',
+      '"http://"', '-F'
+    ]
+    exp = <<~HEREDOC
+    tmp/weird.txt: http[s]?://
+    tmp/weird.txt: http://
+    tmp/weird.txt: http://
+    tmp/sample.html: http://
+    HEREDOC
+    expect(parseArgs(input)).to eq exp
+  end
+  
+  it "Should return the string" do
+    input = ["tmp/weird.txt", "-o", '"http[s]?://xd"',
+      '"http://xd"', '-F'
+    ]
+    exp = <<~HEREDOC
     HEREDOC
     expect(parseArgs(input)).to eq exp
   end
