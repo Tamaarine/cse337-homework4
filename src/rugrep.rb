@@ -293,6 +293,35 @@ def do_matching(files, regexs, script_ret, optional_flag, spacing=0)
   script_ret
 end
 
+def do_matching2(files, regexs, script_ret, optional_flag, spacing=0)
+  if files.length == 1
+    key = files.keys[0]
+    count = 0
+    files[key].each_with_index do |line, i|
+      case optional_flag
+      when "-cv"
+        ret = regexs.all? {|reg| line !~ reg}
+        count += 1 if ret
+      end
+    end
+    script_ret += "#{count}\n" if optional_flag == "-cv"
+  else
+    files.each do |file, file_o|
+      count = 0
+      matched_indices = []
+      file_o.each_with_index do |line, i|
+        case optional_flag
+        when "-cv"
+          ret = regexs.all? {|reg| line !~ reg}
+          count += 1 if ret
+        end
+      end
+      script_ret += "#{file}: #{count}\n" if optional_flag == "-cv"
+    end
+  end
+  script_ret
+end
+
 def parseArgs(args)
   # Handles the 1, 2, 5 error case.
   return $usage if args.length < 2 or not continous_regex?(args)
@@ -322,7 +351,7 @@ def parseArgs(args)
     elsif option_flags["-F"] and option_flags["-c"]
       "-F -c"
     elsif option_flags["-c"] and option_flags["-v"]
-      "-c -v"
+      script_ret = do_matching2(opened_files, regexs, script_ret, "-cv")
     elsif option_flags["-o"] and option_flags["-c"]
       script_ret = do_matching(opened_files, regexs, script_ret, "-c")
     elsif option_flags["-A_NUM"] and option_flags["-v"]
