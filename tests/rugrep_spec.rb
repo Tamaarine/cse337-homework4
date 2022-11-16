@@ -809,9 +809,9 @@ describe "Func: parseArgs" do
   it "Should return the matching output" do
     input = ["tmp/othello.txt", "-B_2", "\"spinster\""]
     exp = <<~HEREDOC
+    More than a spinster; unless the bookish theoric,
     That never set a squadron in the field,
     Nor the division of a battle knows
-    More than a spinster; unless the bookish theoric,
     HEREDOC
     expect(parseArgs(input)).to eq exp
   end
@@ -819,9 +819,9 @@ describe "Func: parseArgs" do
   it "Should return the matching output" do
     input = ["tmp/othello.txt", "tmp/example.html", "-B_2", "\"spinster\""]
     exp = <<~HEREDOC
+    tmp/othello.txt: More than a spinster; unless the bookish theoric,
     tmp/othello.txt: That never set a squadron in the field,
     tmp/othello.txt: Nor the division of a battle knows
-    tmp/othello.txt: More than a spinster; unless the bookish theoric,
     HEREDOC
     expect(parseArgs(input)).to eq exp
   end
@@ -831,16 +831,16 @@ describe "Func: parseArgs" do
       "\"paragraph\""
     ]
     exp = <<~HEREDOC
+    tmp/othello.txt: More than a spinster; unless the bookish theoric,
     tmp/othello.txt: That never set a squadron in the field,
     tmp/othello.txt: Nor the division of a battle knows
-    tmp/othello.txt: More than a spinster; unless the bookish theoric,
+    tmp/example.html: <p>This is a paragraph.</p>
     tmp/example.html: <body>
     tmp/example.html: 
-    tmp/example.html: <p>This is a paragraph.</p>
     --
+    tmp/example.html: <p>This is another paragraph.</p>
     tmp/example.html: 
     tmp/example.html: <p>This is a paragraph.</p>
-    tmp/example.html: <p>This is another paragraph.</p>
     HEREDOC
     expect(parseArgs(input)).to eq exp
   end
@@ -850,16 +850,16 @@ describe "Func: parseArgs" do
       "\"text/css\""
     ]
     exp = <<~HEREDOC
+    tmp/othello.txt: More than a spinster; unless the bookish theoric,
     tmp/othello.txt: That never set a squadron in the field,
     tmp/othello.txt: Nor the division of a battle knows
-    tmp/othello.txt: More than a spinster; unless the bookish theoric,
+    tmp/sample.html: <style type="text/css">
     tmp/sample.html: //-->
     tmp/sample.html: </script>
-    tmp/sample.html: <style type="text/css">
     --
+    tmp/sample.html: <style type="text/css">
     tmp/sample.html: //-->
     tmp/sample.html: </script>
-    tmp/sample.html: <style type="text/css">
     HEREDOC
     expect(parseArgs(input)).to eq exp
   end
@@ -1028,12 +1028,12 @@ describe "Func: parseArgs" do
       "\"says he\""
     ]
     exp = <<~HEREDOC
-    And, in conclusion,
     Nonsuits my mediators; for, 'Certes,' says he,
+    And, in conclusion,
     'I have already chose my officer.'
     --
-    And I, of whom his eyes had seen the proof
     At Rhodes, at Cyprus and on other grounds
+    And I, of whom his eyes had seen the proof
     Christian and heathen, must be be-lee'd and calm'd
     HEREDOC
     expect(parseArgs(input)).to eq exp
@@ -1044,24 +1044,24 @@ describe "Func: parseArgs" do
       "\"says he\""
     ]
     exp = <<~HEREDOC
+    Nonsuits my mediators; for, 'Certes,' says he,
     I know my price, I am worth no worse a place:
     But he; as loving his own pride and purposes,
     Evades them, with a bombast circumstance
     Horribly stuff'd with epithets of war;
     And, in conclusion,
-    Nonsuits my mediators; for, 'Certes,' says he,
     'I have already chose my officer.'
     And what was he?
     Forsooth, a great arithmetician,
     One Michael Cassio, a Florentine,
     A fellow almost damn'd in a fair wife;
     --
+    At Rhodes, at Cyprus and on other grounds
     More than a spinster; unless the bookish theoric,
     Wherein the toged consuls can propose
     As masterly as he: mere prattle, without practise,
     Is all his soldiership. But he, sir, had the election:
     And I, of whom his eyes had seen the proof
-    At Rhodes, at Cyprus and on other grounds
     Christian and heathen, must be be-lee'd and calm'd
     By debitor and creditor: this counter-caster,
     He, in good time, must his lieutenant be,
@@ -1075,18 +1075,18 @@ describe "Func: parseArgs" do
       "\"grounds\"", "\"</body>\"", "\"wiredminds.count()\""
     ]
     exp = <<~HEREDOC
-    tmp/othello.txt: And I, of whom his eyes had seen the proof
     tmp/othello.txt: At Rhodes, at Cyprus and on other grounds
+    tmp/othello.txt: And I, of whom his eyes had seen the proof
     tmp/othello.txt: Christian and heathen, must be be-lee'd and calm'd
     --
-    tmp/othello.txt: He, in good time, must his lieutenant be,
     tmp/othello.txt: And I--God bless the mark!--his Moorship's ancient.
-    tmp/sample.html: wm_track_alt='';
+    tmp/othello.txt: He, in good time, must his lieutenant be,
     tmp/sample.html: wiredminds.count();
+    tmp/sample.html: wm_track_alt='';
     tmp/sample.html: // -->
     --
-    tmp/sample.html: <!-- WiredMinds eMetrics tracking with Enterprise Edition V5.4 END -->
     tmp/sample.html: </body>
+    tmp/sample.html: <!-- WiredMinds eMetrics tracking with Enterprise Edition V5.4 END -->
     tmp/sample.html: </html>
     HEREDOC
     expect(parseArgs(input)).to eq exp
@@ -1401,50 +1401,54 @@ describe "Func: parseArgs" do
     '"License"', '"TXT"', '"c"', "-B_2"
     ]
     exp = <<~HEREDOC
+    tmp/weird.txt: Purpose: Provide example of this file type
     tmp/weird.txt: TXT test file
-    tmp/weird.txt: Purpose: Provide example of this file type
     --
+    tmp/weird.txt: Version: 1.0
     tmp/weird.txt: Purpose: Provide example of this file type
+    tmp/weird.txt: Document file type: TXT
+    --
+    tmp/weird.txt: Remark:
     tmp/weird.txt: Document file type: TXT
     tmp/weird.txt: Version: 1.0
     --
-    tmp/weird.txt: Document file type: TXT
-    tmp/weird.txt: Version: 1.0
-    tmp/weird.txt: Remark:
-    --
-    tmp/weird.txt: Version: 1.0
-    tmp/weird.txt: Remark:
     tmp/weird.txt: 
+    tmp/weird.txt: Version: 1.0
+    tmp/weird.txt: Remark:
     --
+    tmp/weird.txt: 
     tmp/weird.txt: Example content:
     tmp/weird.txt: The names "John Doe" for males, "Jane Doe" or "Jane Roe" for females, or "Jonnie Doe" and "Janie Doe" for children, or just "Doe" non-gender-specifically are used as placeholder names for a party whose true identity is unknown or must be withheld in a legal action, case, or discussion. The names are also used to refer to acorpse or hospital patient whose identity is unknown. This practice is widely used in the United States and Canada, but is rarely used in other English-speaking countries including the United Kingdom itself, from where the use of "John Doe" in a legal context originates. The names Joe Bloggs or John Smith are used in the UK instead, as well as in Australia and New Zealand.
-    tmp/weird.txt: 
     --
+    tmp/weird.txt: 
     tmp/weird.txt: 
     tmp/weird.txt: John Doe is sometimes used to refer to a typical male in other contexts as well, in a similar manner to John Q. Public, known in Great Britain as Joe Public, John Smith or Joe Bloggs. For example, the first name listed on a form is often John Doe, along with a fictional address or other fictional information to provide an example of how to fill in the form. The name is also used frequently in popular culture, for example in the Frank Capra film Meet John Doe. John Doe was also the name of a 2002 American television series.
-    tmp/weird.txt: 
     --
+    tmp/weird.txt: 
     tmp/weird.txt: 
     tmp/weird.txt: Similarly, a child or baby whose identity is unknown may be referred to as Baby Doe. A notorious murder case in Kansas City, Missouri, referred to the baby victim as Precious Doe. Other unidentified female murder victims are Cali Doe and Princess Doe. Additional persons may be called James Doe, Judy Doe, etc. However, to avoid possible confusion, if two anonymous or unknown parties are cited in a specific case or action, the surnames Doe and Roe may be used simultaneously; for example, "John Doe v. Jane Roe". If several anonymous parties are referenced, they may simply be labelled John Doe #1, John Doe #2, etc. (the U.S. Operation Delego cited 21 (numbered) "John Doe"s) or labelled with other variants of Doe / Roe / Poe / etc. Other early alternatives such as John Stiles and Richard Miles are now rarely used, and Mary Major has been used in some American federal cases.
-    tmp/weird.txt: 
     --
+    tmp/weird.txt: 
     tmp/weird.txt: Text of Example content: Wikipedia (https://en.wikipedia.org/wiki/John_Doe)
     tmp/weird.txt: License: Attribution-ShareAlike 4.0 (https://creativecommons.org/licenses/by-sa/4.0/)
-    tmp/weird.txt: 
     tmp/example.html: <!DOCTYPE html>
     --
+    tmp/example.html: <html>
+    tmp/example.html: <!DOCTYPE html>
+    --
+    tmp/example.html: <body>
     tmp/example.html: <!DOCTYPE html>
     tmp/example.html: <html>
     --
-    tmp/example.html: <!DOCTYPE html>
+    tmp/example.html: 
     tmp/example.html: <html>
     tmp/example.html: <body>
     --
-    tmp/example.html: <html>
+    tmp/example.html: <p>This is a paragraph.</p>
     tmp/example.html: <body>
     tmp/example.html: 
     --
-    tmp/example.html: <body>
+    tmp/example.html: <p>This is another paragraph.</p>
     tmp/example.html: 
     tmp/example.html: <p>This is a paragraph.</p>
     --
@@ -1452,17 +1456,13 @@ describe "Func: parseArgs" do
     tmp/example.html: <p>This is a paragraph.</p>
     tmp/example.html: <p>This is another paragraph.</p>
     --
-    tmp/example.html: <p>This is a paragraph.</p>
-    tmp/example.html: <p>This is another paragraph.</p>
-    tmp/example.html: 
-    --
-    tmp/example.html: <p>This is another paragraph.</p>
-    tmp/example.html: 
     tmp/example.html: </body>
-    --
+    tmp/example.html: <p>This is another paragraph.</p>
     tmp/example.html: 
-    tmp/example.html: </body>
+    --
     tmp/example.html: </html>
+    tmp/example.html: 
+    tmp/example.html: </body>
     HEREDOC
     expect(parseArgs(input)).to eq exp
   end
@@ -1472,36 +1472,36 @@ describe "Func: parseArgs" do
     '"License"', '"TXT"', '"c"', "-B_2"
     ]
     exp = <<~HEREDOC
+    Purpose: Provide example of this file type
     TXT test file
-    Purpose: Provide example of this file type
     --
+    Version: 1.0
     Purpose: Provide example of this file type
+    Document file type: TXT
+    --
+    Remark:
     Document file type: TXT
     Version: 1.0
     --
-    Document file type: TXT
-    Version: 1.0
-    Remark:
-    --
-    Version: 1.0
-    Remark:
     
+    Version: 1.0
+    Remark:
     --
+    
     Example content:
     The names "John Doe" for males, "Jane Doe" or "Jane Roe" for females, or "Jonnie Doe" and "Janie Doe" for children, or just "Doe" non-gender-specifically are used as placeholder names for a party whose true identity is unknown or must be withheld in a legal action, case, or discussion. The names are also used to refer to acorpse or hospital patient whose identity is unknown. This practice is widely used in the United States and Canada, but is rarely used in other English-speaking countries including the United Kingdom itself, from where the use of "John Doe" in a legal context originates. The names Joe Bloggs or John Smith are used in the UK instead, as well as in Australia and New Zealand.
-    
     --
+    
     
     John Doe is sometimes used to refer to a typical male in other contexts as well, in a similar manner to John Q. Public, known in Great Britain as Joe Public, John Smith or Joe Bloggs. For example, the first name listed on a form is often John Doe, along with a fictional address or other fictional information to provide an example of how to fill in the form. The name is also used frequently in popular culture, for example in the Frank Capra film Meet John Doe. John Doe was also the name of a 2002 American television series.
-    
     --
+    
     
     Similarly, a child or baby whose identity is unknown may be referred to as Baby Doe. A notorious murder case in Kansas City, Missouri, referred to the baby victim as Precious Doe. Other unidentified female murder victims are Cali Doe and Princess Doe. Additional persons may be called James Doe, Judy Doe, etc. However, to avoid possible confusion, if two anonymous or unknown parties are cited in a specific case or action, the surnames Doe and Roe may be used simultaneously; for example, "John Doe v. Jane Roe". If several anonymous parties are referenced, they may simply be labelled John Doe #1, John Doe #2, etc. (the U.S. Operation Delego cited 21 (numbered) "John Doe"s) or labelled with other variants of Doe / Roe / Poe / etc. Other early alternatives such as John Stiles and Richard Miles are now rarely used, and Mary Major has been used in some American federal cases.
-    
     --
+    
     Text of Example content: Wikipedia (https://en.wikipedia.org/wiki/John_Doe)
     License: Attribution-ShareAlike 4.0 (https://creativecommons.org/licenses/by-sa/4.0/)
-    
     HEREDOC
     expect(parseArgs(input)).to eq exp
   end
@@ -1511,98 +1511,98 @@ describe "Func: parseArgs" do
     '"License"', '"TXT"', '"c"', "-C_2"
     ]
     exp = <<~HEREDOC
+    tmp/weird.txt: Purpose: Provide example of this file type
     tmp/weird.txt: TXT test file
-    tmp/weird.txt: Purpose: Provide example of this file type
     tmp/weird.txt: Document file type: TXT
     tmp/weird.txt: Version: 1.0
     --
+    tmp/weird.txt: Version: 1.0
     tmp/weird.txt: Purpose: Provide example of this file type
     tmp/weird.txt: Document file type: TXT
-    tmp/weird.txt: Version: 1.0
     tmp/weird.txt: Remark:
     tmp/weird.txt: 
     --
+    tmp/weird.txt: Remark:
     tmp/weird.txt: Document file type: TXT
     tmp/weird.txt: Version: 1.0
-    tmp/weird.txt: Remark:
     tmp/weird.txt: 
     tmp/weird.txt: Example content:
     --
+    tmp/weird.txt: 
     tmp/weird.txt: Version: 1.0
     tmp/weird.txt: Remark:
-    tmp/weird.txt: 
     tmp/weird.txt: Example content:
     tmp/weird.txt: The names "John Doe" for males, "Jane Doe" or "Jane Roe" for females, or "Jonnie Doe" and "Janie Doe" for children, or just "Doe" non-gender-specifically are used as placeholder names for a party whose true identity is unknown or must be withheld in a legal action, case, or discussion. The names are also used to refer to acorpse or hospital patient whose identity is unknown. This practice is widely used in the United States and Canada, but is rarely used in other English-speaking countries including the United Kingdom itself, from where the use of "John Doe" in a legal context originates. The names Joe Bloggs or John Smith are used in the UK instead, as well as in Australia and New Zealand.
     --
+    tmp/weird.txt: 
     tmp/weird.txt: Example content:
     tmp/weird.txt: The names "John Doe" for males, "Jane Doe" or "Jane Roe" for females, or "Jonnie Doe" and "Janie Doe" for children, or just "Doe" non-gender-specifically are used as placeholder names for a party whose true identity is unknown or must be withheld in a legal action, case, or discussion. The names are also used to refer to acorpse or hospital patient whose identity is unknown. This practice is widely used in the United States and Canada, but is rarely used in other English-speaking countries including the United Kingdom itself, from where the use of "John Doe" in a legal context originates. The names Joe Bloggs or John Smith are used in the UK instead, as well as in Australia and New Zealand.
-    tmp/weird.txt: 
     tmp/weird.txt: John Doe is sometimes used to refer to a typical male in other contexts as well, in a similar manner to John Q. Public, known in Great Britain as Joe Public, John Smith or Joe Bloggs. For example, the first name listed on a form is often John Doe, along with a fictional address or other fictional information to provide an example of how to fill in the form. The name is also used frequently in popular culture, for example in the Frank Capra film Meet John Doe. John Doe was also the name of a 2002 American television series.
     tmp/weird.txt: 
     --
     tmp/weird.txt: 
-    tmp/weird.txt: John Doe is sometimes used to refer to a typical male in other contexts as well, in a similar manner to John Q. Public, known in Great Britain as Joe Public, John Smith or Joe Bloggs. For example, the first name listed on a form is often John Doe, along with a fictional address or other fictional information to provide an example of how to fill in the form. The name is also used frequently in popular culture, for example in the Frank Capra film Meet John Doe. John Doe was also the name of a 2002 American television series.
     tmp/weird.txt: 
+    tmp/weird.txt: John Doe is sometimes used to refer to a typical male in other contexts as well, in a similar manner to John Q. Public, known in Great Britain as Joe Public, John Smith or Joe Bloggs. For example, the first name listed on a form is often John Doe, along with a fictional address or other fictional information to provide an example of how to fill in the form. The name is also used frequently in popular culture, for example in the Frank Capra film Meet John Doe. John Doe was also the name of a 2002 American television series.
     tmp/weird.txt: Similarly, a child or baby whose identity is unknown may be referred to as Baby Doe. A notorious murder case in Kansas City, Missouri, referred to the baby victim as Precious Doe. Other unidentified female murder victims are Cali Doe and Princess Doe. Additional persons may be called James Doe, Judy Doe, etc. However, to avoid possible confusion, if two anonymous or unknown parties are cited in a specific case or action, the surnames Doe and Roe may be used simultaneously; for example, "John Doe v. Jane Roe". If several anonymous parties are referenced, they may simply be labelled John Doe #1, John Doe #2, etc. (the U.S. Operation Delego cited 21 (numbered) "John Doe"s) or labelled with other variants of Doe / Roe / Poe / etc. Other early alternatives such as John Stiles and Richard Miles are now rarely used, and Mary Major has been used in some American federal cases.
     tmp/weird.txt: 
     --
     tmp/weird.txt: 
-    tmp/weird.txt: Similarly, a child or baby whose identity is unknown may be referred to as Baby Doe. A notorious murder case in Kansas City, Missouri, referred to the baby victim as Precious Doe. Other unidentified female murder victims are Cali Doe and Princess Doe. Additional persons may be called James Doe, Judy Doe, etc. However, to avoid possible confusion, if two anonymous or unknown parties are cited in a specific case or action, the surnames Doe and Roe may be used simultaneously; for example, "John Doe v. Jane Roe". If several anonymous parties are referenced, they may simply be labelled John Doe #1, John Doe #2, etc. (the U.S. Operation Delego cited 21 (numbered) "John Doe"s) or labelled with other variants of Doe / Roe / Poe / etc. Other early alternatives such as John Stiles and Richard Miles are now rarely used, and Mary Major has been used in some American federal cases.
     tmp/weird.txt: 
+    tmp/weird.txt: Similarly, a child or baby whose identity is unknown may be referred to as Baby Doe. A notorious murder case in Kansas City, Missouri, referred to the baby victim as Precious Doe. Other unidentified female murder victims are Cali Doe and Princess Doe. Additional persons may be called James Doe, Judy Doe, etc. However, to avoid possible confusion, if two anonymous or unknown parties are cited in a specific case or action, the surnames Doe and Roe may be used simultaneously; for example, "John Doe v. Jane Roe". If several anonymous parties are referenced, they may simply be labelled John Doe #1, John Doe #2, etc. (the U.S. Operation Delego cited 21 (numbered) "John Doe"s) or labelled with other variants of Doe / Roe / Poe / etc. Other early alternatives such as John Stiles and Richard Miles are now rarely used, and Mary Major has been used in some American federal cases.
     tmp/weird.txt: http[s]?://www.online-convert.com  hehe xd https[s]?
     tmp/weird.txt: http://www.online-convert.com
     --
+    tmp/weird.txt: 
     tmp/weird.txt: Text of Example content: Wikipedia (https://en.wikipedia.org/wiki/John_Doe)
     tmp/weird.txt: License: Attribution-ShareAlike 4.0 (https://creativecommons.org/licenses/by-sa/4.0/)
-    tmp/weird.txt: 
     tmp/weird.txt: Feel free to use and share the file according to the license above.
     tmp/example.html: <!DOCTYPE html>
     tmp/example.html: <html>
     tmp/example.html: <body>
     --
+    tmp/example.html: <html>
+    tmp/example.html: <!DOCTYPE html>
+    tmp/example.html: <body>
+    tmp/example.html: 
+    --
+    tmp/example.html: <body>
     tmp/example.html: <!DOCTYPE html>
     tmp/example.html: <html>
-    tmp/example.html: <body>
     tmp/example.html: 
+    tmp/example.html: <p>This is a paragraph.</p>
     --
-    tmp/example.html: <!DOCTYPE html>
+    tmp/example.html: 
     tmp/example.html: <html>
     tmp/example.html: <body>
-    tmp/example.html: 
     tmp/example.html: <p>This is a paragraph.</p>
+    tmp/example.html: <p>This is another paragraph.</p>
     --
-    tmp/example.html: <html>
+    tmp/example.html: <p>This is a paragraph.</p>
     tmp/example.html: <body>
     tmp/example.html: 
-    tmp/example.html: <p>This is a paragraph.</p>
-    tmp/example.html: <p>This is another paragraph.</p>
-    --
-    tmp/example.html: <body>
-    tmp/example.html: 
-    tmp/example.html: <p>This is a paragraph.</p>
     tmp/example.html: <p>This is another paragraph.</p>
     tmp/example.html: 
     --
+    tmp/example.html: <p>This is another paragraph.</p>
     tmp/example.html: 
     tmp/example.html: <p>This is a paragraph.</p>
-    tmp/example.html: <p>This is another paragraph.</p>
     tmp/example.html: 
     tmp/example.html: </body>
     --
+    tmp/example.html: 
     tmp/example.html: <p>This is a paragraph.</p>
     tmp/example.html: <p>This is another paragraph.</p>
-    tmp/example.html: 
     tmp/example.html: </body>
     tmp/example.html: </html>
     --
+    tmp/example.html: </body>
     tmp/example.html: <p>This is another paragraph.</p>
     tmp/example.html: 
-    tmp/example.html: </body>
     tmp/example.html: </html>
     --
+    tmp/example.html: </html>
     tmp/example.html: 
     tmp/example.html: </body>
-    tmp/example.html: </html>
     HEREDOC
     expect(parseArgs(input)).to eq exp
   end
@@ -1612,50 +1612,50 @@ describe "Func: parseArgs" do
     '"License"', '"TXT"', '"c"', "-C_2"
     ]
     exp = <<~HEREDOC
+    Purpose: Provide example of this file type
     TXT test file
-    Purpose: Provide example of this file type
     Document file type: TXT
     Version: 1.0
     --
+    Version: 1.0
     Purpose: Provide example of this file type
     Document file type: TXT
-    Version: 1.0
     Remark:
     
     --
+    Remark:
     Document file type: TXT
     Version: 1.0
-    Remark:
     
     Example content:
     --
+    
     Version: 1.0
     Remark:
-    
     Example content:
     The names "John Doe" for males, "Jane Doe" or "Jane Roe" for females, or "Jonnie Doe" and "Janie Doe" for children, or just "Doe" non-gender-specifically are used as placeholder names for a party whose true identity is unknown or must be withheld in a legal action, case, or discussion. The names are also used to refer to acorpse or hospital patient whose identity is unknown. This practice is widely used in the United States and Canada, but is rarely used in other English-speaking countries including the United Kingdom itself, from where the use of "John Doe" in a legal context originates. The names Joe Bloggs or John Smith are used in the UK instead, as well as in Australia and New Zealand.
     --
+    
     Example content:
     The names "John Doe" for males, "Jane Doe" or "Jane Roe" for females, or "Jonnie Doe" and "Janie Doe" for children, or just "Doe" non-gender-specifically are used as placeholder names for a party whose true identity is unknown or must be withheld in a legal action, case, or discussion. The names are also used to refer to acorpse or hospital patient whose identity is unknown. This practice is widely used in the United States and Canada, but is rarely used in other English-speaking countries including the United Kingdom itself, from where the use of "John Doe" in a legal context originates. The names Joe Bloggs or John Smith are used in the UK instead, as well as in Australia and New Zealand.
-    
     John Doe is sometimes used to refer to a typical male in other contexts as well, in a similar manner to John Q. Public, known in Great Britain as Joe Public, John Smith or Joe Bloggs. For example, the first name listed on a form is often John Doe, along with a fictional address or other fictional information to provide an example of how to fill in the form. The name is also used frequently in popular culture, for example in the Frank Capra film Meet John Doe. John Doe was also the name of a 2002 American television series.
     
     --
     
-    John Doe is sometimes used to refer to a typical male in other contexts as well, in a similar manner to John Q. Public, known in Great Britain as Joe Public, John Smith or Joe Bloggs. For example, the first name listed on a form is often John Doe, along with a fictional address or other fictional information to provide an example of how to fill in the form. The name is also used frequently in popular culture, for example in the Frank Capra film Meet John Doe. John Doe was also the name of a 2002 American television series.
     
+    John Doe is sometimes used to refer to a typical male in other contexts as well, in a similar manner to John Q. Public, known in Great Britain as Joe Public, John Smith or Joe Bloggs. For example, the first name listed on a form is often John Doe, along with a fictional address or other fictional information to provide an example of how to fill in the form. The name is also used frequently in popular culture, for example in the Frank Capra film Meet John Doe. John Doe was also the name of a 2002 American television series.
     Similarly, a child or baby whose identity is unknown may be referred to as Baby Doe. A notorious murder case in Kansas City, Missouri, referred to the baby victim as Precious Doe. Other unidentified female murder victims are Cali Doe and Princess Doe. Additional persons may be called James Doe, Judy Doe, etc. However, to avoid possible confusion, if two anonymous or unknown parties are cited in a specific case or action, the surnames Doe and Roe may be used simultaneously; for example, "John Doe v. Jane Roe". If several anonymous parties are referenced, they may simply be labelled John Doe #1, John Doe #2, etc. (the U.S. Operation Delego cited 21 (numbered) "John Doe"s) or labelled with other variants of Doe / Roe / Poe / etc. Other early alternatives such as John Stiles and Richard Miles are now rarely used, and Mary Major has been used in some American federal cases.
     
     --
     
-    Similarly, a child or baby whose identity is unknown may be referred to as Baby Doe. A notorious murder case in Kansas City, Missouri, referred to the baby victim as Precious Doe. Other unidentified female murder victims are Cali Doe and Princess Doe. Additional persons may be called James Doe, Judy Doe, etc. However, to avoid possible confusion, if two anonymous or unknown parties are cited in a specific case or action, the surnames Doe and Roe may be used simultaneously; for example, "John Doe v. Jane Roe". If several anonymous parties are referenced, they may simply be labelled John Doe #1, John Doe #2, etc. (the U.S. Operation Delego cited 21 (numbered) "John Doe"s) or labelled with other variants of Doe / Roe / Poe / etc. Other early alternatives such as John Stiles and Richard Miles are now rarely used, and Mary Major has been used in some American federal cases.
     
+    Similarly, a child or baby whose identity is unknown may be referred to as Baby Doe. A notorious murder case in Kansas City, Missouri, referred to the baby victim as Precious Doe. Other unidentified female murder victims are Cali Doe and Princess Doe. Additional persons may be called James Doe, Judy Doe, etc. However, to avoid possible confusion, if two anonymous or unknown parties are cited in a specific case or action, the surnames Doe and Roe may be used simultaneously; for example, "John Doe v. Jane Roe". If several anonymous parties are referenced, they may simply be labelled John Doe #1, John Doe #2, etc. (the U.S. Operation Delego cited 21 (numbered) "John Doe"s) or labelled with other variants of Doe / Roe / Poe / etc. Other early alternatives such as John Stiles and Richard Miles are now rarely used, and Mary Major has been used in some American federal cases.
     http[s]?://www.online-convert.com  hehe xd https[s]?
     http://www.online-convert.com
     --
+    
     Text of Example content: Wikipedia (https://en.wikipedia.org/wiki/John_Doe)
     License: Attribution-ShareAlike 4.0 (https://creativecommons.org/licenses/by-sa/4.0/)
-    
     Feel free to use and share the file according to the license above.
     HEREDOC
     expect(parseArgs(input)).to eq exp
