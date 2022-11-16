@@ -376,7 +376,7 @@ def parseArgs(args)
   return $usage if files.length == 0
   opened_files, script_ret = open_files(files, script_ret)
   
-  regexs, script_ret = get_regexs(args, script_ret)
+  regexs, script_ret = get_regexs(args, script_ret) if not option_flags["-F"]
   
   if sum_flags(option_flags) == 3
     if option_flags["-F"] and option_flags["-v"] and option_flags["-c"]
