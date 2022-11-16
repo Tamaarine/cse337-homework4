@@ -172,7 +172,8 @@ def before_context(matched_indices, spacing, all_lines, script_ret, filename)
     curr = matched_indices[i]
     final = curr - spacing < 0 ? 0 : curr - spacing
     
-    ret = all_lines[final..curr].map {|line| filename == "" ? "#{ostrip(line)}\n" : "#{filename}: #{ostrip(line)}\n"}
+    ret = all_lines[final...(curr)].map {|line| filename == "" ? "#{ostrip(line)}\n" : "#{filename}: #{ostrip(line)}\n"}
+    script_ret += filename == "" ? "#{ostrip(all_lines[curr])}\n" : "#{filename}: #{ostrip(all_lines[curr])}\n"
     script_ret += ret.join("")
     script_ret += "--\n" if i != m_length - 1
   end
@@ -201,7 +202,10 @@ def context(matched_indices, spacing, all_lines, script_ret, filename)
     final_b = curr - spacing < 0 ? 0 : curr - spacing
     final_a = curr + spacing >= l_length ? l_length - 1 : curr + spacing
     
-    ret = all_lines[final_b..final_a].map {|line| filename == "" ? "#{ostrip(line)}\n" : "#{filename}: #{ostrip(line)}\n"}
+    script_ret += filename == "" ? "#{ostrip(all_lines[curr])}\n" : "#{filename}: #{ostrip(all_lines[curr])}\n"
+    ret = all_lines[final_b...(curr)].map {|line| filename == "" ? "#{ostrip(line)}\n" : "#{filename}: #{ostrip(line)}\n"}
+    script_ret += ret.join("")
+    ret = all_lines[(curr + 1)..final_a].map {|line| filename == "" ? "#{ostrip(line)}\n" : "#{filename}: #{ostrip(line)}\n"}
     script_ret += ret.join("")
     script_ret += "--\n" if i != m_length - 1
   end
