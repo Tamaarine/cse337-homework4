@@ -3,7 +3,7 @@ args = ARGF.argv
 # args = ARGV
 
 $usage = "USAGE: ruby rugrep.rb <OPTIONS> <PATTERNS> <FILES>"
-$error_regex = "Error: cannot parse regex"
+$error_regex = "Error: cannot parse regex\n"
 $after_c = /\A(\-A_|\-\-after\-context=)(\d*)\z/
 $before_c = /\A(\-B_|\-\-before\-context=)(\d*)\z/
 $c = /\A(\-C_|\-\-context=)(\d*)\z/
@@ -135,7 +135,7 @@ def get_regexs(args, script_ret)
     if regex_format?(arg)
       parsed = parse_regex(arg)
       if not parsed
-        script_ret += "Error: cannot parse regex #{arg}\n"
+        script_ret += $error_regex
       else
         ret.push(parsed)
       end
