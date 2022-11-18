@@ -382,7 +382,7 @@ describe "Func: get_regexs" do
     ret, script_ret = get_regexs(input, script_ret)
     exp = [/[az]pple/]
     expect(ret).to eq exp
-    expect(script_ret).to eq "Error: cannot parse regex \"[\"\n"
+    expect(script_ret).to eq "Error: cannot parse regex\n"
   end
   
   it "Should return matching list with matching script_ret" do
@@ -391,7 +391,7 @@ describe "Func: get_regexs" do
     ret, script_ret = get_regexs(input, script_ret)
     exp = [/[az]pple/]
     expect(ret).to eq exp
-    expect(script_ret).to eq "Error: cannot parse regex \"[\"\nError: cannot parse regex \"?\"\n"
+    expect(script_ret).to eq "Error: cannot parse regex\nError: cannot parse regex\n"
   end
 end
 
